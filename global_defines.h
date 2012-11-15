@@ -8,6 +8,9 @@ static const QString OrganizationName("ROSA Lab");
 static const QString OrganizationDomain("rosalab.ru");
 static const QString ApplicationName("RocketBar");
 static const QString ApplicationVersion("2.0");
+
+static const int DefaultPanelHeight = 50;
+static const int DefaultPanelWidth = 50;
 }
 
 #endif // GLOBAL_DEFINES_H

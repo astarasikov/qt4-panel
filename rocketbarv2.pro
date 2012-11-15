@@ -14,12 +14,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     mainwidget.cpp \
-    panelarea.cpp
+    panelarea.cpp \
+    element.cpp
 
 HEADERS  += \
     mainwidget.h \
     config.h \
     global_defines.h \
-    panelarea.h
+    panelarea.h \
+    element.h \
+    layout.h
 
 FORMS    +=

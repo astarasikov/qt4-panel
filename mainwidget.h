@@ -2,12 +2,16 @@
 #define RBMAINWIDGET_H
 
 #include <QWidget>
+#include <QMenu>
+
+#include <QGraphicsScene>
+#include <QGraphicsView>
 
 #include "config.h"
 
 namespace RocketBar {
 
-class MainWidget : public QWidget
+class MainWidget : public QGraphicsView
 {
     Q_OBJECT
 
@@ -16,11 +20,20 @@ public:
     ~MainWidget();
 
 protected:
-    virtual void paintEvent(QPaintEvent *);
-    virtual void mousePressEvent(QMouseEvent *);
+    virtual void contextMenuEvent(QContextMenuEvent *);
 
-    void updateWindow(void);
+    void buildMenu(void);
+    void relayout(RocketBar::PanelLayout);
+
     RocketBar::Config *mConfig;
+    QMenu *mContextMenu;
+
+    QGraphicsScene *mScene;
+
+protected slots:
+    void cycleOrientation(void);
+    void updateWindow(void);
+    void toggleDebug(void);
 };
 
 } //namespace RocketBar
