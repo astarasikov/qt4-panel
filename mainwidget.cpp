@@ -12,6 +12,8 @@
 #include <QGraphicsView>
 #include <QList>
 
+#include <QHBoxLayout>
+
 /* local includes */
 #include "panelarea.h"
 #include "global_defines.h"
@@ -24,17 +26,14 @@ RocketBar::MainWidget::MainWidget(
     setFocus(Qt::ActiveWindowFocusReason);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
-    mScene = new QGraphicsScene(this);
-    mScene->addItem(new Element());
-    mScene->addItem(new Element());
-    mScene->addItem(new Element());
+    mLayout = new QHBoxLayout(this);
+    mLayout->addWidget(new PanelArea(this));
+    mLayout->addWidget(new PanelArea(this));
+    mLayout->addWidget(new PanelArea(this));
+    setLayout(mLayout);
 
-    setScene(mScene);
     setAttribute(Qt::WA_TranslucentBackground);
     setStyleSheet("border-style: none;");
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setRenderHint(QPainter::Antialiasing);
 
     buildMenu();
     updateWindow();
@@ -97,27 +96,14 @@ void RocketBar::MainWidget::updateWindow() {
     move(x, y);
 
     setWindowOpacity(mConfig->debugEnabled() ? 0.7 : 1);
-    relayout(l);
-}
-
-void RocketBar::MainWidget::relayout(RocketBar::PanelLayout o) {
-    int w = width();
-    int h = height();
-    QList<QGraphicsItem*> lst = mScene->items();
-    int itemCount = lst.size();
-
-    int i = 0;
-    foreach (QGraphicsItem* it, mScene->items()) {
-        if (o == RocketBar::Panel_Horizontal) {
-            int maxWidth = (1.0 * w) / itemCount;
-            it->setPos(i * maxWidth, 0);
-        }
-        else {
-            it->setPos(0, (i * 1.0f * h) / itemCount);
-        }
-        i++;
+    if (l == RocketBar::Panel_Horizontal) {
+        mLayout->setDirection(QHBoxLayout::RightToLeft);
+    }
+    else {
+        mLayout->setDirection(QHBoxLayout::TopToBottom);
     }
 }
+
 
 void RocketBar::MainWidget::cycleOrientation(void) {
     RocketBar::ScreenEdge o = mConfig->screenEdge();

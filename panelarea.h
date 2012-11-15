@@ -2,23 +2,26 @@
 #define PANELAREA_H
 
 #include <QWidget>
-#include <QPaintEvent>
+#include <QGraphicsView>
+#include <QGraphicsScene>
+
+#include "layout.h"
 
 namespace RocketBar {
 
-class PanelArea : public QWidget
+class PanelArea : public QGraphicsView
 {
     Q_OBJECT
 public:
     explicit PanelArea(QWidget *parent = 0);
+    void relayout(RocketBar::PanelLayout);
 
 protected:
-    virtual void paintEvent(QPaintEvent *evt);
+    QGraphicsScene *mScene;
 
 signals:
 
 public slots:
-
 };
 
 }

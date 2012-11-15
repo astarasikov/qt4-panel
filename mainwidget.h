@@ -6,6 +6,7 @@
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QHBoxLayout>
 
 #include "config.h"
 
@@ -23,12 +24,10 @@ protected:
     virtual void contextMenuEvent(QContextMenuEvent *);
 
     void buildMenu(void);
-    void relayout(RocketBar::PanelLayout);
 
     RocketBar::Config *mConfig;
     QMenu *mContextMenu;
-
-    QGraphicsScene *mScene;
+    QHBoxLayout *mLayout;
 
 protected slots:
     void cycleOrientation(void);
