@@ -1,40 +1,32 @@
-#ifndef RBMAINWIDGET_H
-#define RBMAINWIDGET_H
+#ifndef MAINWIDGET_H
+#define MAINWIDGET_H
 
-#include <QWidget>
+#include <QDeclarativeView>
 #include <QMenu>
-
-#include <QGraphicsScene>
-#include <QGraphicsView>
-#include <QHBoxLayout>
-
 #include "config.h"
 
 namespace RocketBar {
 
-class MainWidget : public QGraphicsView
+class MainWidget : public QDeclarativeView
 {
     Q_OBJECT
-
 public:
     explicit MainWidget(RocketBar::Config* config, QWidget *parent = 0);
     ~MainWidget();
 
 protected:
-    virtual void contextMenuEvent(QContextMenuEvent *);
-
-    void buildMenu(void);
-
     RocketBar::Config *mConfig;
     QMenu *mContextMenu;
-    QHBoxLayout *mLayout;
+
+    void updateWindow();
+    void addButton();
+    void buildMenu();
 
 protected slots:
+    void contextMenuEvent(QContextMenuEvent *event);
     void cycleOrientation(void);
-    void updateWindow(void);
-    void toggleDebug(void);
 };
 
 } //namespace RocketBar
 
-#endif // RBMAINWIDGET_H
+#endif // MAINWIDGET_H

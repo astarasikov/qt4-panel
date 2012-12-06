@@ -1,12 +1,19 @@
 #include <QApplication>
+#include <QDeclarativeItem>
+#include <QDeclarativeView>
 
-#include "mainwidget.h"
 #include "global_defines.h"
 #include "config.h"
+#include "mainwidget.h"
+#include "panelbutton.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    //move to a separate function
+    qmlRegisterType<RocketBar::PanelButton>("ru.rosalab.rocketbar",
+                                            2, 0, "PanelButton");
 
     a.setOrganizationName(RocketBar::OrganizationName);
     a.setOrganizationDomain(RocketBar::OrganizationDomain);

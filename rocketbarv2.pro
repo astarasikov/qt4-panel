@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += core gui declarative
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -14,15 +14,21 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     mainwidget.cpp \
-    panelarea.cpp \
-    element.cpp
+    panelbutton.cpp
 
 HEADERS  += \
-    mainwidget.h \
     config.h \
     global_defines.h \
-    panelarea.h \
-    element.h \
-    layout.h
+    layout.h \
+    mainwidget.h \
+    panelbutton.h
 
 FORMS    +=
+
+RESOURCES += \
+    rocketbar.qrc
+
+OTHER_FILES += \
+    panel.qml \
+    panel_vertical.qml \
+    button.qml
