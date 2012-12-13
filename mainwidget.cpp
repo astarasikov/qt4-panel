@@ -18,7 +18,7 @@ RocketBar::MainWidget::MainWidget(
     setFocus(Qt::ActiveWindowFocusReason);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_TranslucentBackground);
-    setStyleSheet("border-style: none;");
+    setStyleSheet("border-style: none;background:transparent;");
     buildMenu();
 
     updateWindow();
