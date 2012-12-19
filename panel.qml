@@ -121,16 +121,33 @@ Rectangle {
             objectName: "trayArea"
             spacing: 2
 
-            Text {
-                id:label
-                text:"test label"
+            Item {
+                Text {
+                    anchors.top:panelRoot.top;
+                    y: -15;
+                    id:rb_clock
+                    text:"00:00"
+                    font.pointSize: 24
+                    color: "white"
+                    smooth: true
+                    style: Text.Outline; styleColor: "black"
+                }
+                Text {
+                    id:rb_date
+                    text:"date"
+                    font.pointSize: 8
+                    color: "white"
+                    smooth: true
+                    anchors.top: rb_clock.bottom;
+                    anchors.horizontalCenter: rb_clock.horizontalCenter;
+                }
             }
 
             Timer {
                 interval: 500
                 running: true
                 repeat: true
-                onTriggered: label.text = Date().toLocaleString()
+                onTriggered: rb_clock.text = Qt.formatDateTime(new Date(), "hh:mm"),rb_date.text = Qt.formatDateTime(new Date(), "d.m.yyyy")
             }
         }
     }
