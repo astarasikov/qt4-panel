@@ -9,12 +9,49 @@ Rectangle {
 
     gradient: Gradient {
         GradientStop {
-            position: 0.0
-            color: "#80787878"
+            position: 0.18
+            color: "#00787878"
+        }
+        GradientStop {
+            position: 0.2
+            color: "#e0707090"
         }
         GradientStop {
             position: 1.0
-            color: "#171"
+            color: "#FF101040"
+        }
+    }
+
+    // блик
+    Rectangle {
+        width: parent.width;
+        height: parent.height/1.6;
+
+        x: 0;
+        y: parent.height * 0.2;
+        color: "#00000000";
+        clip: true;
+
+        Rectangle {
+            radius: parent.width/2;
+            smooth: true;
+
+            width: parent.width;
+            height: parent.height;
+
+
+            x: 0;
+            y: -parent.height/2;
+            gradient: Gradient {
+                GradientStop {
+                    position: 0
+                    color: "#90FFFFFF"
+                }
+                GradientStop {
+                    position: 1.0
+                    color: "#50FFFFFF"
+                }
+            }
         }
     }
 
