@@ -1,4 +1,5 @@
 #include "panelbutton.h"
+#include <QtCore/QProcess>
 
 RocketBar::PanelButton::PanelButton(QDeclarativeItem *parent)
     : QDeclarativeItem(parent)
@@ -8,4 +9,5 @@ RocketBar::PanelButton::PanelButton(QDeclarativeItem *parent)
 
 void RocketBar::PanelButton::clicked() {
     qDebug() << "RocketBar::PanelButton::clicked()";
+    QProcess::startDetached("/usr/bin/konsole");
 }

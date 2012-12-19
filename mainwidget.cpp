@@ -33,6 +33,7 @@ void RocketBar::MainWidget::addButton() {
     QDeclarativeItem *it = qobject_cast<QDeclarativeItem*>(component.create());
     QDeclarativeItem *launcherArea =
             rootObject()->findChild<QDeclarativeItem*>("tasksArea");
+    //container.push_front(it);
     it->setParentItem(launcherArea);
 }
 
@@ -78,9 +79,10 @@ void RocketBar::MainWidget::updateWindow() {
     move(x, y);
 
     //XXX: this is a hack. should store them to reparent
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 4; i++) {
         addButton();
     }
+
 }
 
 void RocketBar::MainWidget::cycleOrientation(void) {
@@ -110,8 +112,12 @@ void RocketBar::MainWidget::buildMenu(void) {
     QAction *aToggleDebug = new QAction(tr("Toggle &Debug"), this);
     connect(aToggleDebug, SIGNAL(triggered()), this, SLOT(toggleDebug()));
 
+    QAction *aAddButton = new QAction(tr("Add &Button"), this);
+    connect(aAddButton, SIGNAL(triggered()), this, SLOT(addButton()));
+
     mContextMenu->addAction(aCycleOrientation);
     mContextMenu->addAction(aToggleDebug);
+    mContextMenu->addAction(aAddButton);
     mContextMenu->addSeparator();
     mContextMenu->addAction(aQuit);
 }

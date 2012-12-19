@@ -2,6 +2,7 @@
 #define MAINWIDGET_H
 
 #include <QDeclarativeView>
+#include <QDeclarativeComponent>
 #include <QMenu>
 #include "config.h"
 
@@ -17,14 +18,17 @@ public:
 protected:
     RocketBar::Config *mConfig;
     QMenu *mContextMenu;
+    //temporary
+    std::list<QDeclarativeComponent> container;
 
     void updateWindow();
-    void addButton();
+    //void addButton();
     void buildMenu();
 
 protected slots:
     void contextMenuEvent(QContextMenuEvent *event);
     void cycleOrientation(void);
+    void addButton();
 };
 
 } //namespace RocketBar

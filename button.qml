@@ -28,7 +28,7 @@ Rectangle {
 
         Text {
             anchors.centerIn: parent
-            text: "Test"
+            text: "Run Konsole"
             color: "white"
         }
     }
