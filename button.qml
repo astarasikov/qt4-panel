@@ -11,6 +11,7 @@ Rectangle {
         width: 20
         height: 20
         id: button
+        objectName: "button"
         anchors.fill: parent
 
         Rectangle {
@@ -27,8 +28,9 @@ Rectangle {
         }
 
         Text {
+            id: title
             anchors.centerIn: parent
-            text: "Run Konsole"
+            text: button.text
             color: "white"
         }
     }

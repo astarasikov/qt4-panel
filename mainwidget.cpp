@@ -35,6 +35,11 @@ void RocketBar::MainWidget::addButton() {
             rootObject()->findChild<QDeclarativeItem*>("tasksArea");
     //container.push_front(it);
     it->setParentItem(launcherArea);
+
+    PanelButton *button = it->findChild<PanelButton*>("button");
+    if (button) {
+        button->setText("Run Terminal");
+    }
 }
 
 void RocketBar::MainWidget::updateWindow() {
