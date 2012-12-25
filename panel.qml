@@ -111,23 +111,21 @@ Rectangle {
                 color: "green"
             }
 
-            Rectangle {width:30;height:30;radius:10;color: "blue"}
-            Rectangle {width:30;height:30;radius:10;color: "blue"}
-            Rectangle {width:30;height:30;radius:10;color: "blue"}
-            Rectangle {width:30;height:30;radius:10;color: "blue"}
-            Rectangle {width:30;height:30;radius:10;color: "blue"}
-//            Rectangle {width:20;height:20;radius:10;color: "blue"}
-//            Rectangle {width:20;height:20;radius:10;color: "blue"}
-//            Rectangle {width:20;height:20;radius:10;color: "blue"}
-//            Rectangle {width:20;height:20;radius:10;color: "blue"}
-//            Rectangle {width:20;height:20;radius:10;color: "blue"}
-//            Rectangle {width:20;height:20;radius:10;color: "blue"}
-//            Rectangle {width:20;height:20;radius:10;color: "blue"}
-//            Rectangle {width:20;height:20;radius:10;color: "blue"}
-//            Rectangle {width:20;height:20;radius:10;color: "blue"}
-//            Rectangle {width:20;height:20;radius:10;color: "blue"}
-//            Rectangle {width:20;height:20;radius:10;color: "blue"}
-//            Rectangle {width:20;height:20;radius:10;color: "blue"}
+            //for testing
+            Flickable {
+                width: 100
+                height: 30
+                contentWidth: 30
+                contentHeight: 30
+                boundsBehavior: Flickable.DragOverBounds
+                Row {
+                    spacing: 2
+                    Repeater {
+                        model: 10
+                        Rectangle {width:30;height:30;radius:10;color: "blue"}
+                    }
+                }
+            }
         }
 
         Rectangle{
