@@ -4,12 +4,10 @@ import ru.rosalab.rocketbar 2.0
 Rectangle {
     width: 100
     height: 20
-    radius: 10
+    radius: 5
     color: "#0f0"
 
     PanelButton {
-        width: 20
-        height: 20
         id: button
         objectName: "button"
         anchors.fill: parent

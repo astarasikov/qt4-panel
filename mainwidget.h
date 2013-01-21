@@ -18,17 +18,13 @@ public:
 protected:
     RocketBar::Config *mConfig;
     QMenu *mContextMenu;
-    //temporary
-    std::list<QDeclarativeComponent> container;
 
     void updateWindow();
-    //void addButton();
     void buildMenu();
 
 protected slots:
     void contextMenuEvent(QContextMenuEvent *event);
-    void cycleOrientation(void);
-    void addButton();
+    void addButton(QString &);
 };
 
 } //namespace RocketBar

@@ -28,7 +28,7 @@ RocketBar::MainWidget::~MainWidget() {
 
 }
 
-void RocketBar::MainWidget::addButton() {
+void RocketBar::MainWidget::addButton(QString &name) {
     QDeclarativeComponent component(engine(), QUrl("qrc:/button.qml"));
     QDeclarativeItem *it = qobject_cast<QDeclarativeItem*>(component.create());
     QDeclarativeItem *launcherArea =
@@ -38,7 +38,7 @@ void RocketBar::MainWidget::addButton() {
 
     PanelButton *button = it->findChild<PanelButton*>("button");
     if (button) {
-        button->setText("Run Terminal");
+        button->setText(name);
     }
 }
 
@@ -83,19 +83,15 @@ void RocketBar::MainWidget::updateWindow() {
     root->setProperty("height", h);
     move(x, y);
 
-    //XXX: this is a hack. should store them to reparent
-    for (int i = 0; i < 4; i++) {
-        addButton();
+    if (!mConfig->mWindowManager) {
+        return;
     }
 
-}
-
-void RocketBar::MainWidget::cycleOrientation(void) {
-    RocketBar::ScreenEdge o = mConfig->screenEdge();
-    o = static_cast<RocketBar::ScreenEdge>((o + 1) % 4);
-    mConfig->setScreenEdge(o);
-    updateWindow();
-    repaint();
+    foreach(WindowManager::Window* wnd, mConfig->mWindowManager->getWindows()) {
+        QString title = wnd->getTitle();
+        qDebug() << "Adding " << title;
+        addButton(title);
+    }
 }
 
 void RocketBar::MainWidget::contextMenuEvent(QContextMenuEvent *evt) {
@@ -107,10 +103,6 @@ void RocketBar::MainWidget::contextMenuEvent(QContextMenuEvent *evt) {
 void RocketBar::MainWidget::buildMenu(void) {
     mContextMenu = new QMenu(this);
 
-    QAction *aCycleOrientation = new QAction(tr("Cycle &Orientation"), this);
-    connect(aCycleOrientation, SIGNAL(triggered()),
-            this, SLOT(cycleOrientation()));
-
     QAction *aQuit = new QAction(tr("&Quit"), this);
     connect(aQuit, SIGNAL(triggered()), this, SLOT(close()));
 
@@ -120,7 +112,6 @@ void RocketBar::MainWidget::buildMenu(void) {
     QAction *aAddButton = new QAction(tr("Add &Button"), this);
     connect(aAddButton, SIGNAL(triggered()), this, SLOT(addButton()));
 
-    mContextMenu->addAction(aCycleOrientation);
     mContextMenu->addAction(aToggleDebug);
     mContextMenu->addAction(aAddButton);
     mContextMenu->addSeparator();

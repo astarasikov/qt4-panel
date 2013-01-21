@@ -7,15 +7,23 @@
 #include "layout.h"
 #include "qdebug.h"
 
+#include "windowmanager.h"
+
 namespace RocketBar {
 
 class Config
 {
 public:
-    Config(QApplication *parent = 0) : mSettings(new QSettings(parent)) {
+    WindowManager *mWindowManager;
+
+    Config(QApplication *parent = 0)
+        : mSettings(new QSettings(parent)),
+          mWindowManager(getWindowManager())
+    {
     }
 
     ~Config() {
+        delete mWindowManager;
         delete mSettings;
     }
 
