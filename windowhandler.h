@@ -19,6 +19,7 @@ protected:
 
 public:
     WindowHandler(WindowManager::Window* window);
+    ~WindowHandler();
 
     QString title() const;
     QImage icon() const;
@@ -37,6 +38,6 @@ public slots:
     void minimize();
 };
 
-}
+} //namespace RocketBar
 
 #endif // WINDOWHANDLER_H

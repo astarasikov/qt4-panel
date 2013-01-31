@@ -21,6 +21,11 @@ RocketBar::WindowHandler::WindowHandler(RocketBar::WindowManager::Window* window
     MENU_ACTION("&Minimize", minimize);
 }
 
+RocketBar::WindowHandler::~WindowHandler()
+{
+    delete mMenu;
+}
+
 QString RocketBar::WindowHandler::title() const
 {
     return mWindow->getTitle();

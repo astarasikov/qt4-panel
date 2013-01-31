@@ -60,28 +60,59 @@ Rectangle {
         height: panelRoot.height * 0.8
         anchors.verticalCenter: parent.verticalCenter
 
-        Row {
+        ListView {
+            orientation: ListView.Horizontal
             id: launcherArea
-            objectName: "launcherArea"
-            spacing: 2
-            opacity: 0.6
             width: panelRoot.width / 5
+            height: parent.height
 
-            Flickable {
-                width: launcherArea.width
-                height: launcherArea.height
-                contentWidth: 30
-                contentHeight: 30
-                Row {
-                    spacing: 2
-                    Repeater {
-                        model: 10
-                        Rectangle {width:30;height:30;radius:10;color: "blue"}
+            spacing: 5
+            clip: true
+
+            model: launcherListModel
+
+            delegate: Rectangle {
+                id: frame
+                width: parent.height
+                height: parent.height
+                color: "#303030"
+
+
+                Rectangle {
+                    id: buttonRect
+                    anchors.centerIn: parent
+                    width: parent.width - 4
+                    height: parent.height - 4
+                    color: "black"
+
+                    Image {
+                        width: parent.width - 4
+                        height: parent.height - 4
+                        anchors.centerIn: parent
+                        source: imagePath
+                    }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+
+                    onHoveredChanged: {
+                        if (containsMouse) {
+                            buttonRect.color = "#303030"
+                            frame.color = "lime"
+                        }
+                        else {
+                            buttonRect.color = "black"
+                            frame.color = "#303030"
+                        }
+                    }
+                    onClicked: {
+                        handleClick()
                     }
                 }
             }
         }
-
 
         ListView {
             orientation: ListView.Horizontal
@@ -98,14 +129,14 @@ Rectangle {
             model: tasksListModel
 
             delegate: Rectangle {
-                id: frame
+                id: iconFrame
                 width: 150
                 height: parent.height
                 color: "#303030"
 
 
                 Rectangle {
-                    id: buttonRect
+                    id: iconRect
                     anchors.centerIn: parent
                     width: parent.width - 4
                     height: parent.height - 4
@@ -125,12 +156,12 @@ Rectangle {
 
                     onHoveredChanged: {
                         if (containsMouse) {
-                            buttonRect.color = "#303030"
-                            frame.color = "lime"
+                            iconRect.color = "#303030"
+                            iconFrame.color = "lime"
                         }
                         else {
-                            buttonRect.color = "black"
-                            frame.color = "#303030"
+                            iconRect.color = "black"
+                            iconFrame.color = "#303030"
                         }
                     }
                     onClicked: {

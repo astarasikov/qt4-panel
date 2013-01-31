@@ -19,11 +19,13 @@ protected:
     RocketBar::Context *mContext;
     QMenu *mContextMenu;
 
-    void updateWindow();
     void buildMenu();
+    void buildLauncher();
+    void buildTasks();
 
 protected slots:
     void contextMenuEvent(QContextMenuEvent *event);
+    void updateWindow();
 };
 
 } //namespace RocketBar

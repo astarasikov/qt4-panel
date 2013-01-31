@@ -2,6 +2,7 @@
 #include "global_defines.h"
 #include "panelbutton.h"
 #include "windowhandler.h"
+#include "launcherhandler.h"
 
 #include <QGraphicsObject>
 #include <QDesktopWidget>
@@ -71,6 +72,51 @@ void RocketBar::MainWidget::updateWindow() {
     root->setProperty("height", h);
     move(x, y);
 
+    buildLauncher();
+    buildTasks();
+}
+
+void RocketBar::MainWidget::contextMenuEvent(QContextMenuEvent *evt) {
+    QPoint p(this->x() + evt->x(), this->y() + evt->y());
+    evt->accept();
+    mContextMenu->popup(p);
+}
+
+void RocketBar::MainWidget::buildMenu(void) {
+    mContextMenu = new QMenu(this);
+
+    QAction *aQuit = new QAction(tr("&Quit"), this);
+    connect(aQuit, SIGNAL(triggered()), this, SLOT(close()));
+
+    QAction *aRefresh = new QAction(tr("&Refresh"), this);
+    connect(aRefresh, SIGNAL(triggered()), this, SLOT(updateWindow()));
+
+    mContextMenu->addSeparator();
+    mContextMenu->addAction(aQuit);
+    mContextMenu->addAction(aRefresh);
+}
+
+void RocketBar::MainWidget::buildLauncher()
+{
+    QList<QObject*> launcherList;
+
+    //XXX: it sucks
+    launcherList.append(new LauncherHandler("konsole",
+        "file:///usr/share/icons/rosa/apps/32/konsole.png",
+        "/usr/bin/konsole"));
+    launcherList.append(new LauncherHandler("firefox",
+        "file:///usr/share/icons/hicolor/32x32/apps/firefox.png",
+        "/usr/bin/firefox"));
+    launcherList.append(new LauncherHandler("konqueror",
+        "file:///usr/share/icons/hicolor/32x32/apps/konqueror.png",
+        "/usr/bin/konqueror"));
+
+    rootContext()->setContextProperty("launcherListModel",
+        QVariant::fromValue(launcherList));
+}
+
+void RocketBar::MainWidget::buildTasks()
+{
     if (!mContext->mWindowManager) {
         return;
     }
@@ -87,20 +133,4 @@ void RocketBar::MainWidget::updateWindow() {
 
     rootContext()->setContextProperty("tasksListModel",
         QVariant::fromValue(windowList));
-}
-
-void RocketBar::MainWidget::contextMenuEvent(QContextMenuEvent *evt) {
-    QPoint p(this->x() + evt->x(), this->y() + evt->y());
-    evt->accept();
-    mContextMenu->popup(p);
-}
-
-void RocketBar::MainWidget::buildMenu(void) {
-    mContextMenu = new QMenu(this);
-
-    QAction *aQuit = new QAction(tr("&Quit"), this);
-    connect(aQuit, SIGNAL(triggered()), this, SLOT(close()));
-
-    mContextMenu->addSeparator();
-    mContextMenu->addAction(aQuit);
 }

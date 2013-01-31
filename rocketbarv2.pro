@@ -30,7 +30,8 @@ SOURCES += main.cpp \
     mainwidget.cpp \
     panelbutton.cpp \
     windowmanager.cpp \
-    windowhandler.cpp
+    windowhandler.cpp \
+    launcherhandler.cpp
 
 HEADERS  += \
     global_defines.h \
@@ -39,7 +40,8 @@ HEADERS  += \
     panelbutton.h \
     windowmanager.h \
     context.h \
-    windowhandler.h
+    windowhandler.h \
+    launcherhandler.h
 
 FORMS    +=
 
