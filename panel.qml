@@ -95,55 +95,7 @@ Rectangle {
             spacing: 5
             clip: true
 
-            model: ListModel {
-                objectName : "tasksListModel"
-
-                ListElement {
-                    title: "Test Window"
-                }
-                ListElement {
-                    title: "Test Window"
-                }
-                ListElement {
-                    title: "Test Window"
-                }
-                ListElement {
-                    title: "Test Window"
-                }
-                ListElement {
-                    title: "Test Window"
-                }
-                ListElement {
-                    title: "Test Window"
-                }
-                ListElement {
-                    title: "Test Window"
-                }
-                ListElement {
-                    title: "Test Window"
-                }
-                ListElement {
-                    title: "Test Window"
-                }
-                ListElement {
-                    title: "Test Window"
-                }
-                ListElement {
-                    title: "Test Window"
-                }
-                ListElement {
-                    title: "Test Window"
-                }
-                ListElement {
-                    title: "Test Window"
-                }
-                ListElement {
-                    title: "Test Window"
-                }
-                ListElement {
-                    title: "Test Window"
-                }
-            }
+            model: tasksListModel
 
             delegate: Rectangle {
                 id: frame
@@ -179,8 +131,12 @@ Rectangle {
                             frame.color = "#303030"
                         }
                     }
+                    onClicked: {
+                        handle()
+                    }
                 }
-            }        }
+            }
+        }
 
 
         Row {

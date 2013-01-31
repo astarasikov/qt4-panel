@@ -4,7 +4,7 @@
 #include <QDeclarativeView>
 #include <QDeclarativeComponent>
 #include <QMenu>
-#include "config.h"
+#include "context.h"
 
 namespace RocketBar {
 
@@ -12,11 +12,11 @@ class MainWidget : public QDeclarativeView
 {
     Q_OBJECT
 public:
-    explicit MainWidget(RocketBar::Config* config, QWidget *parent = 0);
+    explicit MainWidget(RocketBar::Context* context, QWidget *parent = 0);
     ~MainWidget();
 
 protected:
-    RocketBar::Config *mConfig;
+    RocketBar::Context *mContext;
     QMenu *mContextMenu;
 
     void updateWindow();
@@ -24,7 +24,6 @@ protected:
 
 protected slots:
     void contextMenuEvent(QContextMenuEvent *event);
-    void addButton(QString &);
 };
 
 } //namespace RocketBar

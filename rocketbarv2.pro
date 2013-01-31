@@ -29,15 +29,17 @@ x11 {
 SOURCES += main.cpp \
     mainwidget.cpp \
     panelbutton.cpp \
-    windowmanager.cpp
+    windowmanager.cpp \
+    windowhandler.cpp
 
 HEADERS  += \
-    config.h \
     global_defines.h \
     layout.h \
     mainwidget.h \
     panelbutton.h \
-    windowmanager.h
+    windowmanager.h \
+    context.h \
+    windowhandler.h
 
 FORMS    +=
 

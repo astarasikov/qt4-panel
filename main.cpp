@@ -3,7 +3,7 @@
 #include <QDeclarativeView>
 
 #include "global_defines.h"
-#include "config.h"
+#include "context.h"
 #include "mainwidget.h"
 #include "panelbutton.h"
 
@@ -20,8 +20,8 @@ int main(int argc, char *argv[])
     a.setApplicationName(RocketBar::ApplicationName);
     a.setApplicationVersion(RocketBar::ApplicationVersion);
 
-    RocketBar::Config config(&a);
-    RocketBar::MainWidget w(&config, 0);
+    RocketBar::Context context(&a);
+    RocketBar::MainWidget w(&context);
     w.show();
 
     return a.exec();

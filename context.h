@@ -1,5 +1,5 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef CONTEXT_H
+#define CONTEXT_H
 
 #include <QApplication>
 #include <QSettings>
@@ -11,18 +11,18 @@
 
 namespace RocketBar {
 
-class Config
+class Context
 {
 public:
     WindowManager *mWindowManager;
 
-    Config(QApplication *parent = 0)
+    Context(QApplication *parent = 0)
         : mSettings(new QSettings(parent)),
           mWindowManager(getWindowManager())
     {
     }
 
-    ~Config() {
+    ~Context() {
         delete mWindowManager;
         delete mSettings;
     }
@@ -54,4 +54,4 @@ protected:
 
 } //namespace RocketBar
 
-#endif // CONFIG_H
+#endif // CONTEXT_H
