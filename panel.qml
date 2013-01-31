@@ -99,7 +99,7 @@ Rectangle {
 
             delegate: Rectangle {
                 id: frame
-                width: 100
+                width: 150
                 height: parent.height
                 color: "#303030"
 

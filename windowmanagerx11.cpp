@@ -51,29 +51,6 @@ RocketBar::WindowManagerX11 *RocketBar::WindowManagerX11::instance()
     return gWindowManagerX11Instance;
 }
 
-RocketBar::WindowManagerX11::WindowManagerX11()
-    : mWindows(WindowList()),
-      mData(new WindowManagerX11::X11WindowManagerData())
-{
-    FLOG;
-
-    //use :: to access X11 definitons from the global namespace
-    ::Display *display = QX11Info::display();
-    ::Window root = DefaultRootWindow(display);
-    ::Window dummy;
-
-    ::Window *children;
-    unsigned int nChildren = 0;
-    if (!XQueryTree(display, root, &dummy, &dummy, &children, &nChildren)) {
-        return;
-    }
-
-    for (unsigned i = 0; i < nChildren; i++) {
-        Window::X11WindowData *data = new Window::X11WindowData(children[i]);
-        mWindows.append(new Window(data));
-    }
-}
-
 template <class T>
 static bool propertyHelper(::Window window, ::Atom atom,
                            ::Atom type, unsigned long &numItems, T** data) {
@@ -151,6 +128,37 @@ static void sendNETWMMessage(::Window window, const QString& name,
     XSendEvent(QX11Info::display(), root, False,
                SubstructureNotifyMask | SubstructureRedirectMask,
                reinterpret_cast<XEvent*>(&event));
+}
+
+RocketBar::WindowManagerX11::WindowManagerX11()
+    : mWindows(WindowList()),
+      mData(new WindowManagerX11::X11WindowManagerData())
+{
+    FLOG;
+
+    //use :: to access X11 definitons from the global namespace
+    ::Display *display = QX11Info::display();
+    ::Window root = DefaultRootWindow(display);
+    ::Window dummy;
+
+    ::Window *children;
+    unsigned int nChildren = 0;
+    if (!XQueryTree(display, root, &dummy, &dummy, &children, &nChildren)) {
+        return;
+    }
+
+    for (unsigned i = 0; i < nChildren; i++) {
+        ::XWindowAttributes wa;
+        if (!XGetWindowAttributes(display, children[i], &wa)) {
+            continue;
+        }
+        if (wa.map_state != IsViewable) {
+            continue;
+        }
+
+        Window::X11WindowData *data = new Window::X11WindowData(children[i]);
+        mWindows.append(new Window(data));
+    }
 }
 
 RocketBar::WindowManagerX11::Window::Window(X11WindowData *data)
