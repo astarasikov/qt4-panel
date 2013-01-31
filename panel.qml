@@ -14,11 +14,11 @@ Rectangle {
         }
         GradientStop {
             position: 0.2
-            color: "#e0707090"
+            color: "#a0303030"
         }
         GradientStop {
             position: 1.0
-            color: "#FF101040"
+            color: "#FF101010"
         }
     }
 
@@ -55,69 +55,23 @@ Rectangle {
         }
     }
 
-    Rectangle {
-        height: 20
+    Row {
+        width: panelRoot.width
+        height: panelRoot.height * 0.8
         anchors.verticalCenter: parent.verticalCenter
-
-        Rectangle{
-            id:first
-            x:0
-            height: parent.parent.height+5
-            width: 5
-            color: "green"
-        }
 
         Row {
             id: launcherArea
             objectName: "launcherArea"
             spacing: 2
             opacity: 0.6
-            anchors.leftMargin: 5
-            anchors.rightMargin: 5
-            anchors.left: first.right
-            anchors.right: spacer1.left
+            width: panelRoot.width / 5
 
-            MouseArea {
-                id:icon1
-                width: 30
-                height: 30
-
-                Rectangle {
-                    id: one
-                    anchors.fill: parent
-                    radius: 10
-                    color: "yellow"
-                }
-
-                onClicked: {
-                    icon1.opacity = icon1.opacity < 0.9 ? icon1.opacity + 0.1 : 0.5
-                }
-                onDoubleClicked: {
-                    if (mouse.button === Qt.LeftButton)
-                        icon1.destroy();
-                }
-            }
-
-            Rectangle {
-                width:30
-                height:30
-                radius:10
-                color: "red"
-            }
-            Rectangle {
-                width: 30
-                height: 30
-                radius:10
-                color: "green"
-            }
-
-            //for testing
             Flickable {
-                width: 100
-                height: 30
+                width: launcherArea.width
+                height: launcherArea.height
                 contentWidth: 30
                 contentHeight: 30
-                boundsBehavior: Flickable.DragOverBounds
                 Row {
                     spacing: 2
                     Repeater {
@@ -128,50 +82,113 @@ Rectangle {
             }
         }
 
-        Rectangle{
-            id:spacer1
-            x:500
-            height: parent.parent.height
-            width: 10
-            color: "red"
 
-//            MouseArea{
-//                height: parent.height
-//                width: parent.width
-//                drag.target: spacer1
-//                drag.axis: Drag.XAxis
-//            }
-        }
-
-        Row {
+        ListView {
+            orientation: ListView.Horizontal
             id: tasksArea
-            objectName: "tasksArea"
-            spacing: 2
-            anchors.leftMargin: 10
-            anchors.left: spacer1.right
-            anchors.right: spacer2.left
-        }
+            anchors.left: launcherArea.right
+            anchors.leftMargin: 2
+            anchors.rightMargin: 2
+            width: 3 * panelRoot.width / 5
+            height: parent.height
 
-        Rectangle{
-            id:spacer2
-            x:1300
-            height: parent.parent.height
-            width: 10
-            color: "red"
-            MouseArea{
-                height: parent.height
-                width: parent.width
-                drag.target: spacer2
-                drag.axis: Drag.XAxis
+            spacing: 5
+            clip: true
+
+            model: ListModel {
+                objectName : "tasksListModel"
+
+                ListElement {
+                    title: "Test Window"
+                }
+                ListElement {
+                    title: "Test Window"
+                }
+                ListElement {
+                    title: "Test Window"
+                }
+                ListElement {
+                    title: "Test Window"
+                }
+                ListElement {
+                    title: "Test Window"
+                }
+                ListElement {
+                    title: "Test Window"
+                }
+                ListElement {
+                    title: "Test Window"
+                }
+                ListElement {
+                    title: "Test Window"
+                }
+                ListElement {
+                    title: "Test Window"
+                }
+                ListElement {
+                    title: "Test Window"
+                }
+                ListElement {
+                    title: "Test Window"
+                }
+                ListElement {
+                    title: "Test Window"
+                }
+                ListElement {
+                    title: "Test Window"
+                }
+                ListElement {
+                    title: "Test Window"
+                }
+                ListElement {
+                    title: "Test Window"
+                }
             }
-        }
+
+            delegate: Rectangle {
+                id: frame
+                width: 100
+                height: parent.height
+                color: "#303030"
+
+
+                Rectangle {
+                    id: buttonRect
+                    anchors.centerIn: parent
+                    width: parent.width - 4
+                    height: parent.height - 4
+                    color: "black"
+                    Text {
+                        anchors.centerIn: parent
+                        text: title
+                        color: "white"
+                    }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+
+                    onHoveredChanged: {
+                        if (containsMouse) {
+                            buttonRect.color = "#303030"
+                            frame.color = "lime"
+                        }
+                        else {
+                            buttonRect.color = "black"
+                            frame.color = "#303030"
+                        }
+                    }
+                }
+            }        }
+
 
         Row {
             id: trayArea
             objectName: "trayArea"
             spacing: 2
-            anchors.left: spacer2.right
-            anchors.right: last.left
+            anchors.left: tasksArea.right
+            width: panelRoot.width / 5
 
             Item {
                 id:clockItem
@@ -207,22 +224,13 @@ Rectangle {
                         tick = false
                         rb_clock.text = Qt.formatDateTime(new Date(), "hh:mm")
                     }
-                    else{//just for lulz
+                    else{
                         rb_clock.text = Qt.formatDateTime(new Date(), "hh;mm")
                         tick = true
                     }
                     rb_date.text = Qt.formatDateTime(new Date(), "dd.MM.yyyy")
                 }
             }
-        }
-
-        Rectangle{
-            id:last
-            height:parent.parent.height
-            width: 10
-            x:parent.parent.width-width
-            color: "green"
-
         }
     }
 }
