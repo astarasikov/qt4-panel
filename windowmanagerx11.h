@@ -19,7 +19,7 @@ public:
         void destroy(void);
         void setParent(WindowManager::Window *parent);
         QString getTitle(void);
-        QIcon getIcon(void);
+        QImage getIcon(void);
 
         Window(X11WindowData *data);
         ~Window();

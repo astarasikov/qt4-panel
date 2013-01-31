@@ -20,10 +20,10 @@ public:
         void destroy(void);
         void setParent(WindowManager::Window *parent);
         QString getTitle(void);
-        QIcon getIcon(void);
+        QImage getIcon(void);
     protected:
         QString mName;
-        QIcon mIcon;
+        QImage mIcon;
         bool mIsAlive;
         bool mIsActivated;
         bool mIsMapped;

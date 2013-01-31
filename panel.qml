@@ -114,6 +114,8 @@ Rectangle {
                         anchors.centerIn: parent
                         text: title
                         color: "white"
+                        width: parent.width - 10
+                        elide: Text.ElideRight
                     }
                 }
 
@@ -132,7 +134,7 @@ Rectangle {
                         }
                     }
                     onClicked: {
-                        handle()
+                        handleClick()
                     }
                 }
             }

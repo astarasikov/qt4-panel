@@ -130,6 +130,29 @@ static QString propertyLatin1String(::Window window, const QString &name) {
     return value;
 }
 
+static void sendNETWMMessage(::Window window, const QString& name,
+                             unsigned long l0 = 0, unsigned long l1 = 0,
+                             unsigned long l2 = 0, unsigned long l3 = 0,
+                             unsigned long l4 = 0)
+{
+    XClientMessageEvent event;
+    event.type = ClientMessage;
+    event.window = window;
+    event.message_type = atom(name);
+    event.format = 32;
+    event.data.l[0] = l0;
+    event.data.l[1] = l1;
+    event.data.l[2] = l2;
+    event.data.l[3] = l3;
+    event.data.l[4] = l4;
+
+    ::Display *display = QX11Info::display();
+    ::Window root = DefaultRootWindow(display);
+    XSendEvent(QX11Info::display(), root, False,
+               SubstructureNotifyMask | SubstructureRedirectMask,
+               reinterpret_cast<XEvent*>(&event));
+}
+
 RocketBar::WindowManagerX11::Window::Window(X11WindowData *data)
     : mData(data)
 {
@@ -144,12 +167,16 @@ RocketBar::WindowManagerX11::Window::~Window()
 
 void RocketBar::WindowManagerX11::Window::activate()
 {
-    FLOG;
+    XWindowChanges wc;
+    wc.stack_mode = Above;
+    XConfigureWindow(QX11Info::display(), mData->mWindow, CWStackMode, &wc);
+
+    sendNETWMMessage(mData->mWindow, "_NET_ACTIVE_WINDOW", 2, CurrentTime);
 }
 
 void RocketBar::WindowManagerX11::Window::minimize()
 {
-    FLOG;
+    XIconifyWindow(QX11Info::display(), mData->mWindow, QX11Info::appScreen());
 }
 
 void RocketBar::WindowManagerX11::Window::map()
@@ -159,17 +186,17 @@ void RocketBar::WindowManagerX11::Window::map()
 
 void RocketBar::WindowManagerX11::Window::close()
 {
-    FLOG;
+    sendNETWMMessage(mData->mWindow, "_NET_CLOSE_WINDOW", CurrentTime, 2);
 }
 
 void RocketBar::WindowManagerX11::Window::kill()
 {
-    FLOG;
+    XKillClient(QX11Info::display(), mData->mWindow);
 }
 
 void RocketBar::WindowManagerX11::Window::destroy()
 {
-    FLOG;
+    XDestroyWindow(QX11Info::display(), mData->mWindow);
 }
 
 void RocketBar::WindowManagerX11::Window::setParent(RocketBar::WindowManager::Window *parent)
@@ -198,33 +225,42 @@ QString RocketBar::WindowManagerX11::Window::getTitle()
     return QString("<Unknown>");
 }
 
-QIcon RocketBar::WindowManagerX11::Window::getIcon()
+QImage RocketBar::WindowManagerX11::Window::getIcon()
 {
     unsigned long nItems;
-    ::Atom *data;
-    QIcon icon;
+    ::Atom *data = 0;
+    QImage image;
     if (!propertyHelper(mData->mWindow, atom("_NET_WM_ICON"), XA_CARDINAL,
                         nItems, &data)) {
-        return icon;
+        return image;
     }
 
-    while (nItems) {
+    ::Atom *_data = data;
+    long long _nItems = nItems;
+    while (_data && _nItems > 0) {
         unsigned width = static_cast<unsigned>(data[0]);
         unsigned height = static_cast<unsigned>(data[1]);
-        QImage image(width, height, QImage::Format_ARGB32);
+        if (!width || !height) {
+            break;
+        }
+        QImage _image(width, height, QImage::Format_ARGB32);
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                image.setPixel(j, i,
-                    static_cast<unsigned int>(data[i * width + j]));
+               image.setPixel(j, i,
+                    static_cast<unsigned int>(_data[i * width + j]));
             }
         }
-        data += width * height;
-        nItems -= (2 + width * height);
-        icon.addPixmap(QPixmap::fromImage(image));
+        _data += width * height;
+        _nItems -= (2 + width * height);
+        if (_image.width() > image.width()) {
+            image = _image;
+        }
     }
 
-    XFree(data);
-    return icon;
+    if (data) {
+        XFree(data);
+    }
+    return image;
 }
 
 RocketBar::WindowManager::WindowList &RocketBar::WindowManagerX11::getWindows()

@@ -9,7 +9,7 @@ RocketBar::WindowManagerStub::WindowManagerStub()
 {
     FLOG;
 #define MK_WINDOW(x) \
-    mWindows.append(new WindowManagerStub::Window(QString(x), QIcon()));
+    mWindows.append(new WindowManagerStub::Window(QString(x), QImage()));
 
     MK_WINDOW("test1");
     MK_WINDOW("Foo");
@@ -17,7 +17,7 @@ RocketBar::WindowManagerStub::WindowManagerStub()
     MK_WINDOW("Cool Stuff");
 }
 
-RocketBar::WindowManagerStub::Window::Window(QString name, QIcon icon)
+RocketBar::WindowManagerStub::Window::Window(QString name, QImage icon)
     : mName(name),
       mIcon(icon),
       mIsAlive(true),
@@ -74,7 +74,7 @@ QString RocketBar::WindowManagerStub::Window::getTitle()
     return mName;
 }
 
-QIcon RocketBar::WindowManagerStub::Window::getIcon()
+QImage RocketBar::WindowManagerStub::Window::getIcon()
 {
     FLOG;
     return mIcon;

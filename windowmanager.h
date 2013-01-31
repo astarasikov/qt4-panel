@@ -1,7 +1,7 @@
 #ifndef WINDOWMANAGER_H
 #define WINDOWMANAGER_H
 
-#include <QtGui/QIcon>
+#include <QtGui/QImage>
 #include <QtCore/QVector>
 
 namespace RocketBar {
@@ -20,7 +20,7 @@ public:
         virtual void setParent(Window *parent) = 0;
 
         virtual QString getTitle(void) = 0;
-        virtual QIcon getIcon(void) = 0;
+        virtual QImage getIcon(void) = 0;
     };
 
     typedef QVector<RocketBar::WindowManager::Window*> WindowList;
