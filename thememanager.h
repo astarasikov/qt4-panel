@@ -32,6 +32,7 @@ public:
     void setTheme(QString name);
 
     QUrl qml(enum QMLtypes type);
+    QList<QString> themes(void);
 };
 
 } //namespace RocketBar

@@ -210,6 +210,7 @@ void RocketBar::WindowManagerX11::Window::destroy()
 void RocketBar::WindowManagerX11::Window::setParent(RocketBar::WindowManager::Window *parent)
 {
     FLOG;
+    Q_ASSERT(parent);
 }
 
 QString RocketBar::WindowManagerX11::Window::getTitle()
@@ -252,8 +253,8 @@ QImage RocketBar::WindowManagerX11::Window::getIcon()
             break;
         }
         QImage _image(width, height, QImage::Format_ARGB32);
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
+        for (size_t i = 0; i < height; i++) {
+            for (size_t j = 0; j < width; j++) {
                image.setPixel(j, i,
                     static_cast<unsigned int>(_data[i * width + j]));
             }

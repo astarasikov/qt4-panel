@@ -32,7 +32,8 @@ SOURCES += main.cpp \
     windowmanager.cpp \
     windowhandler.cpp \
     launcherhandler.cpp \
-    thememanager.cpp
+    thememanager.cpp \
+    xdgimageprovider.cpp
 
 HEADERS  += \
     global_defines.h \
@@ -43,7 +44,8 @@ HEADERS  += \
     context.h \
     windowhandler.h \
     launcherhandler.h \
-    thememanager.h
+    thememanager.h \
+    xdgimageprovider.h
 
 FORMS    +=
 

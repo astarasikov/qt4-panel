@@ -43,6 +43,11 @@ QUrl RocketBar::ThemeManager::qml(QMLtypes type) {
     return QUrl("qrc:/" + fileName);
 }
 
+QList<QString> RocketBar::ThemeManager::themes()
+{
+    return mThemeFiles.keys();
+}
+
 void RocketBar::ThemeManager::setTheme(QString name) {
     mCustomThemeName = name;
 }

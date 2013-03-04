@@ -23,8 +23,8 @@ public:
 
     Context(QApplication *parent = 0)
         : mSettings(new QSettings(parent)),
-          mWindowManager(getWindowManager()),
-          mThemeManager(new ThemeManager(*mSettings))
+          mThemeManager(new ThemeManager(*mSettings)),
+          mWindowManager(getWindowManager())
     {
     }
 
@@ -38,17 +38,6 @@ public:
 
     ThemeManager &themeManager(void) const {
         return *mThemeManager;
-    }
-
-    bool debugEnabled(void) {
-        QVariant v = mSettings->value("debugEnabled", false);
-        return v.toBool();
-    }
-
-    //XXX: remove this
-    void toggleDebug(void) {
-        QVariant v(!debugEnabled());
-        mSettings->setValue("debugEnabled", v);
     }
 
     enum RocketBar::ScreenEdge screenEdge(void) {

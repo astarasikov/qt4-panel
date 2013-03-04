@@ -3,6 +3,7 @@
 #include "panelbutton.h"
 #include "windowhandler.h"
 #include "launcherhandler.h"
+#include "xdgimageprovider.h"
 
 #include <QGraphicsObject>
 #include <QDesktopWidget>
@@ -10,6 +11,7 @@
 #include <QDeclarativeContext>
 #include <QDeclarativeComponent>
 #include <QDeclarativeItem>
+#include <QDeclarativeEngine>
 
 #include <QContextMenuEvent>
 
@@ -23,6 +25,9 @@ RocketBar::MainWidget::MainWidget(
     setAttribute(Qt::WA_TranslucentBackground);
     setStyleSheet("border-style: none;background:transparent;");
     buildMenu();
+
+    engine()->addImageProvider(QLatin1String("xdg"),
+                    new XdgImageProvider(QDeclarativeImageProvider::Pixmap));
 
     updateWindow();
 }
@@ -102,13 +107,10 @@ void RocketBar::MainWidget::buildLauncher()
 
     //XXX: it sucks
     launcherList.append(new LauncherHandler("konsole",
-        "file:///usr/share/icons/rosa/apps/32/konsole.png",
         "/usr/bin/konsole"));
     launcherList.append(new LauncherHandler("firefox",
-        "file:///usr/share/icons/hicolor/32x32/apps/firefox.png",
         "/usr/bin/firefox"));
     launcherList.append(new LauncherHandler("konqueror",
-        "file:///usr/share/icons/hicolor/32x32/apps/konqueror.png",
         "/usr/bin/konqueror"));
 
     rootContext()->setContextProperty("launcherListModel",

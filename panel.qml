@@ -89,7 +89,7 @@ Rectangle {
                         width: parent.width - 4
                         height: parent.height - 4
                         anchors.centerIn: parent
-                        source: imagePath
+                        source: "image://xdg/" + title
                     }
                 }
 
