@@ -17,8 +17,6 @@ void RocketBar::LauncherHandler::handleClick()
     QProcess::startDetached(mCommand);
 }
 
-
-
 RocketBar::LauncherHandler::LauncherHandler(QString _title,
                                             QString _imagePath,
                                             QString _command)

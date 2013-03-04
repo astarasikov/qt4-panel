@@ -52,5 +52,4 @@ RESOURCES += \
 
 OTHER_FILES += \
     panel.qml \
-    panel_vertical.qml \
-    button.qml
+    panel_vertical.qml

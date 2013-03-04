@@ -8,23 +8,36 @@
 #include "qdebug.h"
 
 #include "windowmanager.h"
+#include "thememanager.h"
 
 namespace RocketBar {
 
 class Context
 {
+protected:
+    QSettings *mSettings;
+    ThemeManager *mThemeManager;
+
 public:
     WindowManager *mWindowManager;
 
     Context(QApplication *parent = 0)
         : mSettings(new QSettings(parent)),
-          mWindowManager(getWindowManager())
+          mWindowManager(getWindowManager()),
+          mThemeManager(new ThemeManager(*mSettings))
     {
     }
 
     ~Context() {
+        mSettings->sync();
+
         delete mWindowManager;
+        delete mThemeManager;
         delete mSettings;
+    }
+
+    ThemeManager &themeManager(void) const {
+        return *mThemeManager;
     }
 
     bool debugEnabled(void) {
@@ -47,9 +60,6 @@ public:
     void setScreenEdge(enum RocketBar::ScreenEdge e) {
         mSettings->setValue("screenEdge", static_cast<int>(e));
     }
-
-protected:
-    QSettings *mSettings;
 };
 
 } //namespace RocketBar

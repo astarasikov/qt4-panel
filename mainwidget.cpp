@@ -61,10 +61,10 @@ void RocketBar::MainWidget::updateWindow() {
     }
 
     if (l == RocketBar::Panel_Horizontal) {
-        setSource(QUrl("qrc:/panel.qml"));
+        setSource(mContext->themeManager().qml(ThemeManager::PANEL));
     }
     else {
-        setSource(QUrl("qrc:/panel_vertical.qml"));
+        setSource(mContext->themeManager().qml(ThemeManager::PANEL_VERTICAL));
     }
 
     QGraphicsObject *root = rootObject();

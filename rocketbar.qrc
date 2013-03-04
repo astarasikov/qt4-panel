@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
-    <file>button.qml</file>
-    <file>panel.qml</file>
-    <file>panel_vertical.qml</file>
+        <file>panel.qml</file>
+        <file>panel_vertical.qml</file>
     </qresource>
 </RCC>

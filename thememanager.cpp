@@ -1,35 +1,71 @@
 #include "thememanager.h"
-#include <QDir>
 
-QMap<QString,QString> RocketBar::ThemeManager::mThemeFiles;
-static QString catalogues[]={
-    "/usr/share/themes",
-    "~/.themes"
-};
+#define KEY_THEME_NAME "ThemeManager::themeName"
 
-RocketBar::ThemeManager::ThemeManager()
+RocketBar::ThemeManager::ThemeManager(QSettings &settings)
+    : mSettings(settings),
+      mThemeFiles(QMap<QString, QDir>()),
+      mThemeDirs(QList<QDir>()),
+      mCustomThemeName(mSettings.value(KEY_THEME_NAME).toString())
 {
+    mThemeDirs.append(QDir::fromNativeSeparators(QDir::homePath()
+                                                 + "/.themes"));
+    mThemeDirs.append(QDir::fromNativeSeparators(QDir::rootPath()
+                                                 + "/usr/share/themes"));
+    update();
+}
+
+RocketBar::ThemeManager::~ThemeManager()
+{
+    mSettings.setValue(KEY_THEME_NAME, mCustomThemeName);
+}
+
+QUrl RocketBar::ThemeManager::qml(QMLtypes type) {
+    QString fileName;
+
+    switch (type) {
+    case PANEL:
+        fileName = "panel.qml";
+        break;
+    case PANEL_VERTICAL:
+        fileName = "panel_vertical.qml";
+        break;
+    }
+
+    if (mCustomThemeName.length() && mThemeFiles.contains(mCustomThemeName)) {
+        QDir themeDir = mThemeFiles[mCustomThemeName];
+        QString path = themeDir.filePath(fileName);
+        if (QFileInfo(path).exists()) {
+            return QUrl::fromLocalFile(path);
+        }
+    }
+
+    return QUrl("qrc:/" + fileName);
+}
+
+void RocketBar::ThemeManager::setTheme(QString name) {
+    mCustomThemeName = name;
 }
 
 void RocketBar::ThemeManager::update()
 {
     mThemeFiles.clear();
-    for(int i=0;i<sizeof(catalogues)/sizeof(catalogues[0]);i++){
-        addFilesFromDirectory(catalogues[i]);
+
+    foreach(QDir d, mThemeDirs) {
+        addFilesFromDirectory(d);
     }
 }
 
-void RocketBar::ThemeManager::addFilesFromDirectory(QString directory)
+void RocketBar::ThemeManager::addFilesFromDirectory(QDir &dir)
 {
-    QDir dir(directory);
     foreach(QFileInfo f, dir.entryInfoList()) {
         if (!f.isDir()) {
             continue;
         }
 
-        QFileInfo tempFile(f.absoluteFilePath()+"/rocketbar");
+        QFileInfo tempFile(f.absoluteFilePath(), "rocketbar");
         if (tempFile.exists() && tempFile.isDir()) {
-            mThemeFiles[f.fileName()] = tempFile.absoluteFilePath();
+            mThemeFiles[f.fileName()] = QDir(tempFile.absoluteFilePath());
         }
     }
 }
