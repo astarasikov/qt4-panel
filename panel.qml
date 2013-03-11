@@ -56,6 +56,7 @@ Rectangle {
     }
 
     Row {
+        id: panelMainArea
         width: panelRoot.width
         height: panelRoot.height * 0.8
         //anchors.verticalCenter: parent.verticalCenter
@@ -67,7 +68,7 @@ Rectangle {
             orientation: ListView.Horizontal
             id: launcherArea
             width: panelRoot.width / 5
-            height: parent.height
+            height: panelMainArea.height
 
             spacing: 5
             clip: true
@@ -75,14 +76,14 @@ Rectangle {
             model: launcherListModel
 
             delegate: Rectangle {
-                id: frame
-                width: parent.height
-                height: parent.height
+                id: launcherFrame
+                width: panelMainArea.height
+                height: panelMainArea.height
                 color: "#303030"
 
 
                 Rectangle {
-                    id: buttonRect
+                    id: launcherButtonRect
                     anchors.centerIn: parent
                     width: parent.width - 4
                     height: parent.height - 4
@@ -102,12 +103,12 @@ Rectangle {
 
                     onHoveredChanged: {
                         if (containsMouse) {
-                            buttonRect.color = "#303030"
-                            frame.color = "lime"
+                            launcherButtonRect.color = "#303030"
+                            launcherFrame.color = "lime"
                         }
                         else {
-                            buttonRect.color = "black"
-                            frame.color = "#303030"
+                            launcherButtonRect.color = "black"
+                            launcherFrame.color = "#303030"
                         }
                     }
                     onClicked: {
@@ -127,7 +128,7 @@ Rectangle {
             anchors.leftMargin: 2
             anchors.rightMargin: 2
             width: 3 * panelRoot.width / 5
-            height: parent.height
+            height: panelMainArea.height
 
             spacing: 5
             clip: true
@@ -137,7 +138,7 @@ Rectangle {
             delegate: Rectangle {
                 id: iconFrame
                 width: 150
-                height: parent.height
+                height: panelMainArea.height
                 color: "#303030"
 
 
@@ -199,9 +200,68 @@ Rectangle {
          ********************************************************************/
         Row {
             id: trayArea
-            objectName: "appletArea"
+            objectName: "trayArea"
             spacing: 2
-            width: panelRoot.width / 5
+            width: panelMainArea.width / 5
+            height: panelMainArea.height
+            anchors.left: tasksArea.right
+
+            /*******************************************************************
+             * Applet List
+             ******************************************************************/
+            ListView {
+                orientation: ListView.Horizontal
+                id: appletArea
+                spacing: 5
+                anchors.left: tasksArea.right
+                height:panelMainArea.height
+                width: 200
+
+                clip: true
+
+
+                model: appletListModel
+                delegate: Rectangle {
+                    id: appletFrame
+                    width: parent.height
+                    height: parent.height
+                    color: "#303030"
+
+                    Rectangle {
+                        id: appletButtonRect
+                        anchors.centerIn: parent
+                        width: parent.width - 4
+                        height: parent.height - 4
+                        color: "black"
+
+                        Image {
+                            width: appletButtonRect.width - 4
+                            height: appletButtonRect.height - 4
+                            anchors.centerIn: parent
+                            source: "image://xdg/" + title
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+
+                        onHoveredChanged: {
+                            if (containsMouse) {
+                                appletButtonRect.color = "#303030"
+                                appletFrame.color = "lime"
+                            }
+                            else {
+                                appletButtonRect.color = "black"
+                                appletFrame.color = "#303030"
+                            }
+                        }
+                        onClicked: {
+                            handleClick()
+                        }
+                    }
+                }
+            }
 
             /*******************************************************************
              * Clock
@@ -209,10 +269,10 @@ Rectangle {
             Item {
                 id:clockItem
                 anchors.top: parent.top
-                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.left: appletArea.right
+                width: 50
 
                 Text {
-                    y: -15;
                     id:rb_clock
                     text:"00:00"
                     font.pointSize: 24

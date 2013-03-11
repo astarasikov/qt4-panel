@@ -22,6 +22,7 @@ protected:
 
     void buildMenu();
     void buildLauncher();
+    void buildApplets();
 
 protected slots:
     void contextMenuEvent(QContextMenuEvent *event);

@@ -27,7 +27,6 @@ public:
     ThemeManager(QSettings &settings);
     ~ThemeManager();
 
-
     void update();
     void setTheme(QString name);
 

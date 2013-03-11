@@ -81,6 +81,7 @@ void RocketBar::MainWidget::updateWindow() {
     move(x, y);
 
     buildLauncher();
+    buildApplets();
 }
 
 void RocketBar::MainWidget::updateWindows
@@ -126,11 +127,25 @@ void RocketBar::MainWidget::buildLauncher()
     //XXX: it sucks
     launcherList.append(new LauncherHandler("konsole",
         "/usr/bin/konsole"));
-    launcherList.append(new LauncherHandler("firefox",
-        "/usr/bin/firefox"));
+    launcherList.append(new LauncherHandler("x-terminal-emulator",
+        "/usr/bin/chromium"));
     launcherList.append(new LauncherHandler("konqueror",
         "/usr/bin/konqueror"));
 
     rootContext()->setContextProperty("launcherListModel",
-        QVariant::fromValue(launcherList));
+                                      QVariant::fromValue(launcherList));
+}
+
+void RocketBar::MainWidget::buildApplets()
+{
+    QList<QObject*> appletList;
+
+    appletList.append(new LauncherHandler("foo", "foo"));
+    appletList.append(new LauncherHandler("foo", "foo"));
+    appletList.append(new LauncherHandler("foo", "foo"));
+    appletList.append(new LauncherHandler("foo", "foo"));
+    appletList.append(new LauncherHandler("foo", "foo"));
+
+    rootContext()->setContextProperty("appletListModel",
+                                      QVariant::fromValue(appletList));
 }
