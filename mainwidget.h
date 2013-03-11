@@ -5,6 +5,7 @@
 #include <QDeclarativeComponent>
 #include <QMenu>
 #include "context.h"
+#include "windowmanager.h"
 
 namespace RocketBar {
 
@@ -21,11 +22,13 @@ protected:
 
     void buildMenu();
     void buildLauncher();
-    void buildTasks();
 
 protected slots:
     void contextMenuEvent(QContextMenuEvent *event);
     void updateWindow();
+
+public slots:
+    void updateWindows(WindowManager::WindowList &list);
 };
 
 } //namespace RocketBar

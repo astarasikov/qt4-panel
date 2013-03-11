@@ -33,7 +33,9 @@ SOURCES += main.cpp \
     windowhandler.cpp \
     launcherhandler.cpp \
     thememanager.cpp \
-    xdgimageprovider.cpp
+    xdgimageprovider.cpp \
+    applet.cpp \
+    application.cpp
 
 HEADERS  += \
     global_defines.h \
@@ -45,7 +47,9 @@ HEADERS  += \
     windowhandler.h \
     launcherhandler.h \
     thememanager.h \
-    xdgimageprovider.h
+    xdgimageprovider.h \
+    applet.h \
+    application.h
 
 FORMS    +=
 
@@ -54,4 +58,5 @@ RESOURCES += \
 
 OTHER_FILES += \
     panel.qml \
-    panel_vertical.qml
+    panel_vertical.qml \
+    clock.qml

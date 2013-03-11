@@ -14,6 +14,14 @@
 
 #define FLOG do { qDebug() << "[WindowManagerX11]: " << __func__; } while (0)
 
+namespace RocketBar {
+
+static inline ::Window rootWindow(void) {
+    return DefaultRootWindow(QX11Info::display());
+}
+
+} //namespace RocketBar
+
 class RocketBar::WindowManagerX11::Window::X11WindowData {
 public:
     ::Window mWindow;
@@ -107,6 +115,31 @@ static QString propertyLatin1String(::Window window, const QString &name) {
     return value;
 }
 
+static bool propertyUlong(::Atom propAtom, quint64 &out,
+                          ::Window win = RocketBar::rootWindow())
+{
+    unsigned long nItems;
+    unsigned long *data;
+
+    if (!propertyHelper(win,
+                        propAtom,
+                        XA_CARDINAL,
+                        nItems, &data))
+    {
+        return false;
+    }
+
+    XFree(data);
+
+    if (!nItems) {
+        out = 0;
+        return false;
+    }
+
+    out = *data;
+    return true;
+}
+
 static void sendNETWMMessage(::Window window, const QString& name,
                              unsigned long l0 = 0, unsigned long l1 = 0,
                              unsigned long l2 = 0, unsigned long l3 = 0,
@@ -130,46 +163,79 @@ static void sendNETWMMessage(::Window window, const QString& name,
                reinterpret_cast<XEvent*>(&event));
 }
 
-RocketBar::WindowManagerX11::WindowManagerX11()
-    : mWindows(WindowList()),
-      mData(new WindowManagerX11::X11WindowManagerData())
-{
-    FLOG;
+void RocketBar::WindowManagerX11::updateWindows(void) {
+    ::Window *children = 0;
+    unsigned long int nChildren;
 
-    //use :: to access X11 definitons from the global namespace
-    ::Display *display = QX11Info::display();
-    ::Window root = DefaultRootWindow(display);
-    ::Window dummy;
+    ::Window root = DefaultRootWindow(QX11Info::display());
 
-    ::Window *children;
-    unsigned int nChildren = 0;
-    if (!XQueryTree(display, root, &dummy, &dummy, &children, &nChildren)) {
+    if (!propertyHelper(root, atom("_NET_CLIENT_LIST"),
+                   XA_WINDOW, nChildren, &children))
+    {
         return;
     }
 
     for (unsigned i = 0; i < nChildren; i++) {
-        ::XWindowAttributes wa;
+        /*::XWindowAttributes wa;
         if (!XGetWindowAttributes(display, children[i], &wa)) {
             continue;
         }
         if (wa.map_state != IsViewable) {
             continue;
-        }
+        }*/
 
         Window::X11WindowData *data = new Window::X11WindowData(children[i]);
-        mWindows.append(new Window(data));
+        Window *wnd = new Window(data);
+        qDebug() << "W[" << wnd->getTitle() << " <<< " << wnd->windowClass();
+
+        mWindows.append(wnd);
     }
+    XFree(children);
+}
+
+RocketBar::WindowManagerX11::WindowManagerX11()
+    : mWindows(WindowList()),
+      mData(new WindowManagerX11::X11WindowManagerData())
+{
+    gWindowManagerX11Instance = this;
+    updateWindows();
 }
 
 RocketBar::WindowManagerX11::Window::Window(X11WindowData *data)
     : mData(data)
 {
-    FLOG;
+}
+
+bool RocketBar::WindowManagerX11::Window::PID(quint64 &pid) {
+    return propertyUlong(atom("_NET_NUMBER_OF_DESKTOPS"), pid, mData->mWindow);
+}
+
+quint64 RocketBar::WindowManagerX11::Window::desktopNumber(void) {
+    quint64 ret;
+    if (!propertyUlong(atom("_NET_WM_DESKTOP"), ret, mData->mWindow)) {
+        return 0;
+    }
+    return ret;
+}
+
+enum RocketBar::WindowManagerX11::Window::WindowState
+        RocketBar::WindowManagerX11::Window::windowState(void)
+{
+    WindowState ret = WS_NORMAL;
+
+    return ret;
+}
+
+enum RocketBar::WindowManagerX11::Window::WindowType
+        RocketBar::WindowManagerX11::Window::windowType(void)
+{
+    WindowType ret = WT_NORMAL;
+
+    return ret;
 }
 
 RocketBar::WindowManagerX11::Window::~Window()
 {
-    FLOG;
     delete mData;
 }
 
@@ -211,6 +277,10 @@ void RocketBar::WindowManagerX11::Window::setParent(RocketBar::WindowManager::Wi
 {
     FLOG;
     Q_ASSERT(parent);
+}
+
+QString RocketBar::WindowManagerX11::Window::windowClass(void) {
+    return propertyUTF8String(mData->mWindow, "WM_CLASS");
 }
 
 QString RocketBar::WindowManagerX11::Window::getTitle()
@@ -272,9 +342,39 @@ QImage RocketBar::WindowManagerX11::Window::getIcon()
     return image;
 }
 
+quint64 RocketBar::WindowManagerX11::desktopCount(void) {
+    quint64 ret;
+    if (!propertyUlong(atom("_NET_NUMBER_OF_DESKTOPS"), ret)) {
+        return 0;
+    }
+    return ret;
+}
+
+quint64 RocketBar::WindowManagerX11::currentDesktop(void) {
+    quint64 ret;
+    if (!propertyUlong(atom("_NET_NUMBER_CURRENT_DESKTOP"), ret)) {
+        return 0;
+    }
+    return ret;
+}
+
+void RocketBar::WindowManagerX11::event(XEvent *event)
+{
+    switch (event->type) {
+    case Expose:
+    case ConfigureNotify:
+    case DestroyNotify:
+    case FocusIn:
+    case ReparentNotify:
+    case ClientMessage:
+        updateWindows();
+        emit WindowManager::windowsChanged(mWindows);
+    }
+
+}
+
 RocketBar::WindowManager::WindowList &RocketBar::WindowManagerX11::getWindows()
 {
-    FLOG;
     return mWindows;
 }
 
@@ -285,5 +385,4 @@ RocketBar::WindowManagerX11::X11WindowManagerData *RocketBar::WindowManagerX11::
 
 RocketBar::WindowManagerX11::~WindowManagerX11()
 {
-    FLOG;
 }

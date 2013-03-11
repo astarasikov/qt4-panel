@@ -15,3 +15,13 @@ RocketBar::WindowManager* RocketBar::getWindowManager(void)
 #endif
     return NULL;
 }
+
+
+RocketBar::WindowManager::WindowManager()
+{
+}
+
+RocketBar::WindowManager::~WindowManager()
+{
+}
+

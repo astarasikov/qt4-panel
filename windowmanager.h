@@ -1,13 +1,15 @@
 #ifndef WINDOWMANAGER_H
 #define WINDOWMANAGER_H
 
+#include <QtCore>
 #include <QtGui/QImage>
-#include <QtCore/QVector>
+#include <QList>
 
 namespace RocketBar {
 
-class WindowManager
+class WindowManager : public QObject
 {
+    Q_OBJECT
 public:
     class Window {
     public:
@@ -23,11 +25,14 @@ public:
         virtual QImage getIcon(void) = 0;
     };
 
-    typedef QVector<RocketBar::WindowManager::Window*> WindowList;
+    typedef QList<RocketBar::WindowManager::Window*> WindowList;
 
     virtual WindowList &getWindows(void) = 0;
-    WindowManager() {}
-    virtual ~WindowManager() {}
+    WindowManager();
+    virtual ~WindowManager();
+
+signals:
+    void windowsChanged(WindowManager::WindowList &list);
 };
 
 WindowManager *getWindowManager(void);

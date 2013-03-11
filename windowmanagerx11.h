@@ -7,9 +7,27 @@ namespace RocketBar {
 
 class WindowManagerX11 : public WindowManager
 {
+    Q_OBJECT
 public:
     class Window : public WindowManager::Window {
     public:
+        enum WindowState {
+            WS_MODAL,
+            WS_STICKY,
+            WS_MAXIMIZED_VERT,
+            WS_WAXIMIZED_HORZ,
+            WS_SHADED,
+            WS_NORMAL,
+        };
+
+        enum WindowType {
+            WT_DESKTOP,
+            WT_DOCK,
+            WT_TOOLBAR,
+            WT_MENU,
+            WT_NORMAL,
+        };
+
         class X11WindowData;
         void activate(void);
         void minimize(void);
@@ -18,6 +36,14 @@ public:
         void kill(void);
         void destroy(void);
         void setParent(WindowManager::Window *parent);
+
+        bool PID(quint64 &pid);
+        quint64 desktopNumber(void);
+        QString windowClass(void);
+
+        enum WindowState windowState(void);
+        enum WindowType windowType(void);
+
         QString getTitle(void);
         QImage getIcon(void);
 
@@ -27,15 +53,22 @@ public:
         X11WindowData *mData;
     };
 
+    virtual ~WindowManagerX11();
     static WindowManagerX11 *instance(void);
-    ~WindowManagerX11();
     WindowList &getWindows(void);
+    quint64 desktopCount(void);
+    quint64 currentDesktop(void);
+    void event(XEvent *event);
+
     class X11WindowManagerData;
     X11WindowManagerData *data(void) const;
+
 protected:
-    WindowManagerX11();
     WindowList mWindows;
     X11WindowManagerData *mData;
+
+    WindowManagerX11();
+    void updateWindows(void);
 };
 
 } //namespace RocketBar

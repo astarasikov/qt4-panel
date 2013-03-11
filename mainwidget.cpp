@@ -30,6 +30,9 @@ RocketBar::MainWidget::MainWidget(
                     new XdgImageProvider(QDeclarativeImageProvider::Pixmap));
 
     updateWindow();
+    connect(mContext->mWindowManager,
+            SIGNAL(windowsChanged(WindowManager::WindowList&)),
+            this, SLOT(updateWindows(WindowManager::WindowList&)));
 }
 
 RocketBar::MainWidget::~MainWidget() {
@@ -78,7 +81,29 @@ void RocketBar::MainWidget::updateWindow() {
     move(x, y);
 
     buildLauncher();
-    buildTasks();
+}
+
+void RocketBar::MainWidget::updateWindows
+(RocketBar::WindowManager::WindowList &list)
+{
+    QList<QObject*> windowList;
+
+    QVariant v = rootContext()->contextProperty("taskListModel");
+    QList<QObject*> oldList = v.value<QList<QObject*> >();
+    foreach(QObject *handler, oldList) {
+        delete handler;
+    }
+    oldList.clear();
+
+    foreach(WindowManager::Window* wnd, list) {
+        QString title = wnd->getTitle();
+        qDebug() << "Adding " << title;
+        WindowHandler *handler = new WindowHandler(wnd);
+        windowList.append(handler);
+    }
+
+    rootContext()->setContextProperty("tasksListModel",
+        QVariant::fromValue(windowList));
 }
 
 void RocketBar::MainWidget::contextMenuEvent(QContextMenuEvent *evt) {
@@ -115,24 +140,4 @@ void RocketBar::MainWidget::buildLauncher()
 
     rootContext()->setContextProperty("launcherListModel",
         QVariant::fromValue(launcherList));
-}
-
-void RocketBar::MainWidget::buildTasks()
-{
-    if (!mContext->mWindowManager) {
-        return;
-    }
-
-    //TODO: use QAbstractListModel instead
-    QList<QObject*> windowList;
-
-    foreach(WindowManager::Window* wnd, mContext->mWindowManager->getWindows()) {
-        QString title = wnd->getTitle();
-        qDebug() << "Adding " << title;
-        WindowHandler *handler = new WindowHandler(wnd);
-        windowList.append(handler);
-    }
-
-    rootContext()->setContextProperty("tasksListModel",
-        QVariant::fromValue(windowList));
 }

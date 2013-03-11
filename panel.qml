@@ -22,7 +22,7 @@ Rectangle {
         }
     }
 
-    // блик
+    // background
     Rectangle {
         width: parent.width;
         height: parent.height/1.6;
@@ -60,6 +60,9 @@ Rectangle {
         height: panelRoot.height * 0.8
         anchors.verticalCenter: parent.verticalCenter
 
+        /*********************************************************************
+         * Launcher
+         ********************************************************************/
         ListView {
             orientation: ListView.Horizontal
             id: launcherArea
@@ -114,6 +117,9 @@ Rectangle {
             }
         }
 
+        /*********************************************************************
+         * Task Bar
+         ********************************************************************/
         ListView {
             orientation: ListView.Horizontal
             id: tasksArea
@@ -171,14 +177,19 @@ Rectangle {
             }
         }
 
-
+        /*********************************************************************
+         * Applet Area
+         ********************************************************************/
         Row {
             id: trayArea
-            objectName: "trayArea"
+            objectName: "appletArea"
             spacing: 2
             anchors.left: tasksArea.right
             width: panelRoot.width / 5
 
+            /*******************************************************************
+             * Clock
+             ******************************************************************/
             Item {
                 id:clockItem
                 anchors.centerIn: parent
@@ -204,20 +215,13 @@ Rectangle {
             }
 
             Timer {
-                interval: 500
+                interval: 1000
                 running: true
                 repeat: true
-                property bool tick: false
                 onTriggered: {
-                    if (tick){
-                        tick = false
-                        rb_clock.text = Qt.formatDateTime(new Date(), "hh:mm")
-                    }
-                    else{
-                        rb_clock.text = Qt.formatDateTime(new Date(), "hh;mm")
-                        tick = true
-                    }
-                    rb_date.text = Qt.formatDateTime(new Date(), "dd.MM.yyyy")
+                    var d = new Date();
+                    rb_clock.text = Qt.formatDateTime(d, "hh:mm")
+                    rb_date.text = Qt.formatDateTime(d, "dd.MM.yyyy")
                 }
             }
         }

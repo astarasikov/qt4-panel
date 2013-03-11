@@ -21,6 +21,7 @@ protected:
 public:
     WindowManager *mWindowManager;
 
+
     Context(QApplication *parent = 0)
         : mSettings(new QSettings(parent)),
           mThemeManager(new ThemeManager(*mSettings)),
