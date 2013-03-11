@@ -1,7 +1,6 @@
 #include "mainwidget.h"
 #include "global_defines.h"
 #include "panelbutton.h"
-#include "windowhandler.h"
 #include "launcherhandler.h"
 #include "xdgimageprovider.h"
 
@@ -95,15 +94,8 @@ void RocketBar::MainWidget::updateWindows
     }
     oldList.clear();
 
-    foreach(WindowManager::Window* wnd, list) {
-        QString title = wnd->getTitle();
-        qDebug() << "Adding " << title;
-        WindowHandler *handler = new WindowHandler(wnd);
-        windowList.append(handler);
-    }
-
     rootContext()->setContextProperty("tasksListModel",
-        QVariant::fromValue(windowList));
+        QVariant::fromValue(list));
 }
 
 void RocketBar::MainWidget::contextMenuEvent(QContextMenuEvent *evt) {

@@ -30,7 +30,6 @@ SOURCES += main.cpp \
     mainwidget.cpp \
     panelbutton.cpp \
     windowmanager.cpp \
-    windowhandler.cpp \
     launcherhandler.cpp \
     thememanager.cpp \
     xdgimageprovider.cpp \
@@ -44,7 +43,6 @@ HEADERS  += \
     panelbutton.h \
     windowmanager.h \
     context.h \
-    windowhandler.h \
     launcherhandler.h \
     thememanager.h \
     xdgimageprovider.h \

@@ -22,7 +22,7 @@ static inline ::Window rootWindow(void) {
 
 } //namespace RocketBar
 
-class RocketBar::WindowManagerX11::Window::X11WindowData {
+class RocketBar::X11Window::X11WindowData {
 public:
     ::Window mWindow;
 
@@ -184,9 +184,9 @@ void RocketBar::WindowManagerX11::updateWindows(void) {
             continue;
         }*/
 
-        Window::X11WindowData *data = new Window::X11WindowData(children[i]);
-        Window *wnd = new Window(data);
-        qDebug() << "W[" << wnd->getTitle() << " <<< " << wnd->windowClass();
+        X11Window::X11WindowData *data = new X11Window::X11WindowData(children[i]);
+        X11Window *wnd = new RocketBar::X11Window(data);
+        qDebug() << "W[" << wnd->title() << " <<< " << wnd->windowClass();
 
         mWindows.append(wnd);
     }
@@ -201,16 +201,16 @@ RocketBar::WindowManagerX11::WindowManagerX11()
     updateWindows();
 }
 
-RocketBar::WindowManagerX11::Window::Window(X11WindowData *data)
+RocketBar::X11Window::X11Window(X11WindowData *data)
     : mData(data)
 {
 }
 
-bool RocketBar::WindowManagerX11::Window::PID(quint64 &pid) {
+bool RocketBar::X11Window::PID(quint64 &pid) {
     return propertyUlong(atom("_NET_NUMBER_OF_DESKTOPS"), pid, mData->mWindow);
 }
 
-quint64 RocketBar::WindowManagerX11::Window::desktopNumber(void) {
+quint64 RocketBar::X11Window::desktopNumber(void) {
     quint64 ret;
     if (!propertyUlong(atom("_NET_WM_DESKTOP"), ret, mData->mWindow)) {
         return 0;
@@ -218,28 +218,28 @@ quint64 RocketBar::WindowManagerX11::Window::desktopNumber(void) {
     return ret;
 }
 
-enum RocketBar::WindowManagerX11::Window::WindowState
-        RocketBar::WindowManagerX11::Window::windowState(void)
+enum RocketBar::X11Window::WindowState
+        RocketBar::X11Window::windowState(void)
 {
     WindowState ret = WS_NORMAL;
 
     return ret;
 }
 
-enum RocketBar::WindowManagerX11::Window::WindowType
-        RocketBar::WindowManagerX11::Window::windowType(void)
+enum RocketBar::X11Window::WindowType
+        RocketBar::X11Window::windowType(void)
 {
     WindowType ret = WT_NORMAL;
 
     return ret;
 }
 
-RocketBar::WindowManagerX11::Window::~Window()
+RocketBar::X11Window::~X11Window()
 {
     delete mData;
 }
 
-void RocketBar::WindowManagerX11::Window::activate()
+void RocketBar::X11Window::activate()
 {
     XWindowChanges wc;
     wc.stack_mode = Above;
@@ -248,42 +248,42 @@ void RocketBar::WindowManagerX11::Window::activate()
     sendNETWMMessage(mData->mWindow, "_NET_ACTIVE_WINDOW", 2, CurrentTime);
 }
 
-void RocketBar::WindowManagerX11::Window::minimize()
+void RocketBar::X11Window::minimize()
 {
     XIconifyWindow(QX11Info::display(), mData->mWindow, QX11Info::appScreen());
 }
 
-void RocketBar::WindowManagerX11::Window::map()
+void RocketBar::X11Window::map()
 {
     XMapWindow(QX11Info::display(), mData->mWindow);
 }
 
-void RocketBar::WindowManagerX11::Window::close()
+void RocketBar::X11Window::close()
 {
     sendNETWMMessage(mData->mWindow, "_NET_CLOSE_WINDOW", CurrentTime, 2);
 }
 
-void RocketBar::WindowManagerX11::Window::kill()
+void RocketBar::X11Window::kill()
 {
     XKillClient(QX11Info::display(), mData->mWindow);
 }
 
-void RocketBar::WindowManagerX11::Window::destroy()
+void RocketBar::X11Window::destroy()
 {
     XDestroyWindow(QX11Info::display(), mData->mWindow);
 }
 
-void RocketBar::WindowManagerX11::Window::setParent(RocketBar::WindowManager::Window *parent)
+void RocketBar::X11Window::setParent(RocketBar::Window *parent)
 {
     FLOG;
     Q_ASSERT(parent);
 }
 
-QString RocketBar::WindowManagerX11::Window::windowClass(void) {
+QString RocketBar::X11Window::windowClass(void) {
     return propertyUTF8String(mData->mWindow, "WM_CLASS");
 }
 
-QString RocketBar::WindowManagerX11::Window::getTitle()
+QString RocketBar::X11Window::title()
 {
     ::Window wnd = mData->mWindow;
     QString result = propertyUTF8String(wnd, "_NET_WM_VISIBLE_NAME");
@@ -304,7 +304,11 @@ QString RocketBar::WindowManagerX11::Window::getTitle()
     return QString("<Unknown>");
 }
 
-QImage RocketBar::WindowManagerX11::Window::getIcon()
+void RocketBar::X11Window::handleClick() {
+
+}
+
+QImage RocketBar::X11Window::icon()
 {
     unsigned long nItems;
     ::Atom *data = 0;
