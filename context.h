@@ -10,6 +10,7 @@
 #include "windowmanager.h"
 #include "thememanager.h"
 #include "imageprovider.h"
+#include "mapimageprovider.h"
 
 namespace RocketBar {
 
@@ -22,12 +23,14 @@ protected:
 public:
     ImageProvider *mImageProvider;
     WindowManager *mWindowManager;
+    MapImageProvider *mAppletImageProvider;
 
     Context(QApplication *parent = 0)
         : mSettings(new QSettings(parent)),
           mThemeManager(new ThemeManager(*mSettings)),
           mImageProvider(new ImageProvider(ImageProvider::Pixmap)),
-          mWindowManager(getWindowManager())
+          mWindowManager(getWindowManager()),
+          mAppletImageProvider(new MapImageProvider())
     {
     }
 

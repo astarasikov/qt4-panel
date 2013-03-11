@@ -34,7 +34,9 @@ SOURCES += main.cpp \
     thememanager.cpp \
     applet.cpp \
     application.cpp \
-    imageprovider.cpp
+    imageprovider.cpp \
+    testapplet.cpp \
+    mapimageprovider.cpp
 
 HEADERS  += \
     global_defines.h \
@@ -47,7 +49,9 @@ HEADERS  += \
     thememanager.h \
     applet.h \
     application.h \
-    imageprovider.h
+    imageprovider.h \
+    testapplet.h \
+    mapimageprovider.h
 
 FORMS    +=
 
@@ -56,4 +60,5 @@ RESOURCES += \
 
 OTHER_FILES += \
     panel.qml \
-    panel_vertical.qml
+    panel_vertical.qml \
+    folder.png

@@ -17,7 +17,7 @@ RocketBar::WindowManager* RocketBar::getWindowManager(void)
 }
 
 RocketBar::WindowManager::WindowManager()
-    : mTaskImageProvider(TaskImageProvider())
+    : mTaskImageProvider(MapImageProvider())
 {
 }
 
@@ -25,44 +25,10 @@ RocketBar::WindowManager::~WindowManager()
 {
 }
 
-RocketBar::TaskImageProvider *RocketBar::WindowManager::taskImageProvider()
+RocketBar::MapImageProvider *RocketBar::WindowManager::taskImageProvider()
 {
     return &mTaskImageProvider;
 }
-
-void RocketBar::Window::handleClick()
-{
-    mMenu->show();
-}
-
-
-RocketBar::TaskImageProvider::TaskImageProvider()
-    : QDeclarativeImageProvider(QDeclarativeImageProvider::Image)
-{
-}
-
-QImage RocketBar::TaskImageProvider::requestImage(const QString &id,
-                                                  QSize *size,
-                                                  const QSize &requestedSize)
-{
-    if (mImageMap.contains(id)) {
-        QImage img = mImageMap[id];
-        *size = img.size();
-        return img;
-    }
-    return QImage();
-}
-
-void RocketBar::TaskImageProvider::invalidate()
-{
-    mImageMap.clear();
-}
-
-void RocketBar::TaskImageProvider::update(QString name, QImage image)
-{
-    mImageMap[name] = image;
-}
-
 
 RocketBar::Window::Window() : mMenu(new QMenu())
 {
@@ -83,4 +49,9 @@ RocketBar::Window::Window() : mMenu(new QMenu())
 RocketBar::Window::~Window()
 {
     delete mMenu;
+}
+
+void RocketBar::Window::handleClick()
+{
+    mMenu->show();
 }

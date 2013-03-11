@@ -7,22 +7,9 @@
 #include <QMap>
 #include <QMenu>
 
-#include <QDeclarativeImageProvider>
+#include "mapimageprovider.h"
 
 namespace RocketBar {
-
-class TaskImageProvider : public QDeclarativeImageProvider {
-public:
-    TaskImageProvider();
-
-    QImage requestImage(const QString &id, QSize *size,
-                        const QSize &requestedSize);
-
-    void invalidate(void);
-    void update(QString name, QImage image);
-protected:
-    QMap<QString, QImage> mImageMap;
-};
 
 class Window : public QObject {
     Q_OBJECT
@@ -58,7 +45,7 @@ class WindowManager : public QObject
 {
     Q_OBJECT
 protected:
-    TaskImageProvider mTaskImageProvider;
+    MapImageProvider mTaskImageProvider;
 
 public:
     typedef QList<QObject*> WindowList;
@@ -66,7 +53,7 @@ public:
     virtual ~WindowManager();
 
     virtual WindowList &getWindows(void) = 0;
-    virtual TaskImageProvider *taskImageProvider();
+    virtual MapImageProvider *taskImageProvider();
 
 signals:
     void windowsChanged(WindowManager::WindowList &list);

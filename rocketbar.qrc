@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>panel.qml</file>
         <file>panel_vertical.qml</file>
+        <file>folder.png</file>
     </qresource>
 </RCC>

@@ -3,6 +3,7 @@
 #include "panelbutton.h"
 #include "launcherhandler.h"
 #include "imageprovider.h"
+#include "testapplet.h"
 
 #include <QGraphicsObject>
 #include <QDesktopWidget>
@@ -28,6 +29,8 @@ RocketBar::MainWidget::MainWidget(
     engine()->addImageProvider(QLatin1String("xdg"), mContext->mImageProvider);
     engine()->addImageProvider(QLatin1String("task"),
                                mContext->mWindowManager->taskImageProvider());
+    engine()->addImageProvider(QLatin1String("applet"),
+                               mContext->mAppletImageProvider);
 
     updateWindow();
     connect(mContext->mWindowManager,
@@ -140,11 +143,11 @@ void RocketBar::MainWidget::buildApplets()
 {
     QList<QObject*> appletList;
 
-    appletList.append(new LauncherHandler("foo", "foo"));
-    appletList.append(new LauncherHandler("foo", "foo"));
-    appletList.append(new LauncherHandler("foo", "foo"));
-    appletList.append(new LauncherHandler("foo", "foo"));
-    appletList.append(new LauncherHandler("foo", "foo"));
+    for (int i = 0; i < 5; i++) {
+        TestApplet *applet = new TestApplet();
+        mContext->mAppletImageProvider->update(applet->name(), applet->image());
+        appletList.append(applet);
+    }
 
     rootContext()->setContextProperty("appletListModel",
                                       QVariant::fromValue(appletList));

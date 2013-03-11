@@ -2,6 +2,7 @@
 #define APPLET_H
 
 #include <QObject>
+#include <QImage>
 
 #include "context.h"
 
@@ -10,14 +11,20 @@ namespace RocketBar {
 class Applet : public QObject {
     Q_OBJECT
 
-    //Q_PROPERTY(QString iconName)
+    Q_PROPERTY(QImage image READ image NOTIFY imageChanged)
+    Q_PROPERTY(QString name READ name NOTIFY nameChanged)
 public:
     Applet();
-    virtual ~Applet() = 0;
+    virtual ~Applet();
+    virtual QImage image(void) = 0;
+    virtual QString name(void) = 0;
 
 public slots:
-    virtual void clicked(void) = 0;
+    virtual void handleClick(void) = 0;
     virtual void showMenu(void) = 0;
+signals:
+    void imageChanged();
+    void nameChanged();
 };
 
 } //namespace RocketBar

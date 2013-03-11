@@ -238,7 +238,7 @@ Rectangle {
                             width: appletButtonRect.width - 4
                             height: appletButtonRect.height - 4
                             anchors.centerIn: parent
-                            source: "image://xdg/" + title
+                            source: "image://applet/" + name
                         }
                     }
 

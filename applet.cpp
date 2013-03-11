@@ -3,3 +3,7 @@
 RocketBar::Applet::Applet()
 {
 }
+
+RocketBar::Applet::~Applet()
+{
+}
