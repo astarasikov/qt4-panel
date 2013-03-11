@@ -5,6 +5,7 @@
 #include <QtGui/QImage>
 #include <QList>
 #include <QMap>
+#include <QMenu>
 
 #include <QDeclarativeImageProvider>
 
@@ -27,8 +28,12 @@ class Window : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString title READ title NOTIFY titleChanged)
     Q_PROPERTY(QString iconName READ iconName NOTIFY iconNameChanged)
+protected:
+    QMenu *mMenu;
 
 public:
+    Window();
+    virtual ~Window();
     virtual void setParent(Window *parent) = 0;
     virtual QString title(void) = 0;
     virtual QString iconName(void) = 0;
@@ -54,7 +59,6 @@ class WindowManager : public QObject
     Q_OBJECT
 protected:
     TaskImageProvider mTaskImageProvider;
-
 
 public:
     typedef QList<QObject*> WindowList;

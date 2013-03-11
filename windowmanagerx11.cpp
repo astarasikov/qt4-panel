@@ -177,6 +177,7 @@ void RocketBar::WindowManagerX11::updateWindows(void) {
     }
 
     mTaskImageProvider.invalidate();
+    mWindows.clear();
 
     for (unsigned i = 0; i < nChildren; i++) {
         ::XWindowAttributes wa;

@@ -56,5 +56,4 @@ RESOURCES += \
 
 OTHER_FILES += \
     panel.qml \
-    panel_vertical.qml \
-    clock.qml
+    panel_vertical.qml

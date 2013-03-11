@@ -148,24 +148,28 @@ Rectangle {
                     height: parent.height - 4
                     color: "black"
 
-                    Image {
-                        id: taskIcon
-                        width: parent.height - 4
-                        height: parent.height - 4
-                        anchors.left: parent.left
-                        anchors.verticalCenter: parent.verticalCenter
+                    Row {
+                        spacing: 4
+                        width: parent.width
+                        height: parent.height
 
-                        source: "image://task/" + iconName
-                    }
+                        Image {
+                            id: taskIcon
+                            width: parent.height
+                            height: parent.height
+                            anchors.verticalCenter: parent.verticalCenter
 
-                    Text {
-                        anchors.left: taskIcon.right
-                        anchors.verticalCenter: parent.verticalCenter
+                            source: "image://task/" + iconName
+                        }
 
-                        text: title
-                        color: "white"
-                        width: parent.width - 10
-                        elide: Text.ElideRight
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            text: title
+                            color: "white"
+                            width: parent.width - 10 - taskIcon.width
+                            elide: Text.ElideRight
+                        }
                     }
                 }
 
@@ -204,7 +208,7 @@ Rectangle {
              ******************************************************************/
             Item {
                 id:clockItem
-                anchors.verticalCenter : parent.verticalCenter
+                anchors.top: parent.top
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 Text {
