@@ -2,7 +2,7 @@
 #include "global_defines.h"
 #include "panelbutton.h"
 #include "launcherhandler.h"
-#include "xdgimageprovider.h"
+#include "imageprovider.h"
 
 #include <QGraphicsObject>
 #include <QDesktopWidget>
@@ -25,8 +25,9 @@ RocketBar::MainWidget::MainWidget(
     setStyleSheet("border-style: none;background:transparent;");
     buildMenu();
 
-    engine()->addImageProvider(QLatin1String("xdg"),
-                    new XdgImageProvider(QDeclarativeImageProvider::Pixmap));
+    engine()->addImageProvider(QLatin1String("xdg"), mContext->mImageProvider);
+    engine()->addImageProvider(QLatin1String("task"),
+                               mContext->mWindowManager->taskImageProvider());
 
     updateWindow();
     connect(mContext->mWindowManager,

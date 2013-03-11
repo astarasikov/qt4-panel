@@ -58,7 +58,7 @@ Rectangle {
     Row {
         width: panelRoot.width
         height: panelRoot.height * 0.8
-        anchors.verticalCenter: parent.verticalCenter
+        //anchors.verticalCenter: parent.verticalCenter
 
         /*********************************************************************
          * Launcher
@@ -147,8 +147,21 @@ Rectangle {
                     width: parent.width - 4
                     height: parent.height - 4
                     color: "black"
+
+                    Image {
+                        id: taskIcon
+                        width: parent.height - 4
+                        height: parent.height - 4
+                        anchors.left: parent.left
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        source: "image://task/" + iconName
+                    }
+
                     Text {
-                        anchors.centerIn: parent
+                        anchors.left: taskIcon.right
+                        anchors.verticalCenter: parent.verticalCenter
+
                         text: title
                         color: "white"
                         width: parent.width - 10
@@ -184,7 +197,6 @@ Rectangle {
             id: trayArea
             objectName: "appletArea"
             spacing: 2
-            anchors.left: tasksArea.right
             width: panelRoot.width / 5
 
             /*******************************************************************
@@ -192,9 +204,10 @@ Rectangle {
              ******************************************************************/
             Item {
                 id:clockItem
-                anchors.centerIn: parent
+                anchors.verticalCenter : parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+
                 Text {
-                    anchors.top:panelRoot.top;
                     y: -15;
                     id:rb_clock
                     text:"00:00"

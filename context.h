@@ -9,6 +9,7 @@
 
 #include "windowmanager.h"
 #include "thememanager.h"
+#include "imageprovider.h"
 
 namespace RocketBar {
 
@@ -19,12 +20,13 @@ protected:
     ThemeManager *mThemeManager;
 
 public:
+    ImageProvider *mImageProvider;
     WindowManager *mWindowManager;
-
 
     Context(QApplication *parent = 0)
         : mSettings(new QSettings(parent)),
           mThemeManager(new ThemeManager(*mSettings)),
+          mImageProvider(new ImageProvider(ImageProvider::Pixmap)),
           mWindowManager(getWindowManager())
     {
     }
@@ -33,6 +35,7 @@ public:
         mSettings->sync();
 
         delete mWindowManager;
+        delete mImageProvider;
         delete mThemeManager;
         delete mSettings;
     }

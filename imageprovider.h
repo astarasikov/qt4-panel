@@ -5,10 +5,10 @@
 
 namespace RocketBar {
 
-class XdgImageProvider : public QDeclarativeImageProvider
+class ImageProvider : public QDeclarativeImageProvider
 {
 public:
-    XdgImageProvider(QDeclarativeImageProvider::ImageType type);
+    ImageProvider(QDeclarativeImageProvider::ImageType type);
 
     QPixmap requestPixmap(const QString &id, QSize *size,
                           const QSize &requestedSize);

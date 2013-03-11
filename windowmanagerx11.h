@@ -36,6 +36,7 @@ public:
     enum WindowType windowType(void);
 
     QString title(void);
+    QString iconName(void);
     QImage icon(void);
 
     X11Window(X11WindowData *data);
@@ -44,7 +45,6 @@ protected:
     X11WindowData *mData;
 
 public slots:
-    virtual void handleClick();
     virtual void close();
     virtual void destroy();
     virtual void kill();

@@ -4,26 +4,43 @@
 #include <QtCore>
 #include <QtGui/QImage>
 #include <QList>
+#include <QMap>
+
+#include <QDeclarativeImageProvider>
 
 namespace RocketBar {
+
+class TaskImageProvider : public QDeclarativeImageProvider {
+public:
+    TaskImageProvider();
+
+    QImage requestImage(const QString &id, QSize *size,
+                        const QSize &requestedSize);
+
+    void invalidate(void);
+    void update(QString name, QImage image);
+protected:
+    QMap<QString, QImage> mImageMap;
+};
 
 class Window : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString title READ title NOTIFY titleChanged)
-    Q_PROPERTY(QImage icon READ icon NOTIFY iconChanged)
+    Q_PROPERTY(QString iconName READ iconName NOTIFY iconNameChanged)
 
 public:
     virtual void setParent(Window *parent) = 0;
-
     virtual QString title(void) = 0;
+    virtual QString iconName(void) = 0;
     virtual QImage icon(void) = 0;
 
 signals:
     void titleChanged();
-    void iconChanged();
+    void iconNameChanged();
 
 public slots:
-    virtual void handleClick() = 0;
+    virtual void handleClick();
+
     virtual void close() = 0;
     virtual void destroy() = 0;
     virtual void kill() = 0;
@@ -35,13 +52,17 @@ public slots:
 class WindowManager : public QObject
 {
     Q_OBJECT
+protected:
+    TaskImageProvider mTaskImageProvider;
+
 
 public:
     typedef QList<QObject*> WindowList;
-
-    virtual WindowList &getWindows(void) = 0;
     WindowManager();
     virtual ~WindowManager();
+
+    virtual WindowList &getWindows(void) = 0;
+    virtual TaskImageProvider *taskImageProvider();
 
 signals:
     void windowsChanged(WindowManager::WindowList &list);

@@ -167,7 +167,8 @@ void RocketBar::WindowManagerX11::updateWindows(void) {
     ::Window *children = 0;
     unsigned long int nChildren;
 
-    ::Window root = DefaultRootWindow(QX11Info::display());
+    ::Display *display = QX11Info::display();
+    ::Window root = DefaultRootWindow(display);
 
     if (!propertyHelper(root, atom("_NET_CLIENT_LIST"),
                    XA_WINDOW, nChildren, &children))
@@ -175,20 +176,21 @@ void RocketBar::WindowManagerX11::updateWindows(void) {
         return;
     }
 
+    mTaskImageProvider.invalidate();
+
     for (unsigned i = 0; i < nChildren; i++) {
-        /*::XWindowAttributes wa;
+        ::XWindowAttributes wa;
         if (!XGetWindowAttributes(display, children[i], &wa)) {
             continue;
         }
         if (wa.map_state != IsViewable) {
             continue;
-        }*/
+        }
 
         X11Window::X11WindowData *data = new X11Window::X11WindowData(children[i]);
         X11Window *wnd = new RocketBar::X11Window(data);
-        qDebug() << "W[" << wnd->title() << " <<< " << wnd->windowClass();
-
         mWindows.append(wnd);
+        mTaskImageProvider.update(wnd->iconName(), wnd->icon());
     }
     XFree(children);
 }
@@ -304,8 +306,10 @@ QString RocketBar::X11Window::title()
     return QString("<Unknown>");
 }
 
-void RocketBar::X11Window::handleClick() {
-
+QString RocketBar::X11Window::iconName()
+{
+    quint64 id = static_cast<quint64>(mData->mWindow);
+    return QString::number(id);
 }
 
 QImage RocketBar::X11Window::icon()
@@ -326,10 +330,11 @@ QImage RocketBar::X11Window::icon()
         if (!width || !height) {
             break;
         }
+
         QImage _image(width, height, QImage::Format_ARGB32);
         for (size_t i = 0; i < height; i++) {
             for (size_t j = 0; j < width; j++) {
-               image.setPixel(j, i,
+               _image.setPixel(j, i,
                     static_cast<unsigned int>(_data[i * width + j]));
             }
         }
