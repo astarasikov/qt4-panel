@@ -36,7 +36,8 @@ SOURCES += main.cpp \
     application.cpp \
     imageprovider.cpp \
     testapplet.cpp \
-    mapimageprovider.cpp
+    mapimageprovider.cpp \
+    stackfolderapplet.cpp
 
 HEADERS  += \
     global_defines.h \
@@ -51,7 +52,8 @@ HEADERS  += \
     application.h \
     imageprovider.h \
     testapplet.h \
-    mapimageprovider.h
+    mapimageprovider.h \
+    stackfolderapplet.h
 
 FORMS    +=
 

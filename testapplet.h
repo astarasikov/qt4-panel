@@ -24,8 +24,6 @@ public:
 
 public slots:
     virtual void handleClick();
-    virtual void handleClick(int x, int y);
-    virtual void openFile(QListWidgetItem* item);
     virtual void showMenu();
 };
 

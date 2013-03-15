@@ -4,6 +4,7 @@
 #include "launcherhandler.h"
 #include "imageprovider.h"
 #include "testapplet.h"
+#include "stackfolderapplet.h"
 
 #include <QGraphicsObject>
 #include <QDesktopWidget>
@@ -143,7 +144,11 @@ void RocketBar::MainWidget::buildApplets()
 {
     QList<QObject*> appletList;
 
-    for (int i = 0; i < 5; i++) {
+    StackFolderApplet *sfapplet = new StackFolderApplet();
+    mContext->mAppletImageProvider->update(sfapplet->name(), sfapplet->image());
+    appletList.append(sfapplet);
+
+    for (int i = 0; i < 4; i++) {
         TestApplet *applet = new TestApplet();
         mContext->mAppletImageProvider->update(applet->name(), applet->image());
         appletList.append(applet);

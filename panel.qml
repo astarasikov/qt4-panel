@@ -257,7 +257,7 @@ Rectangle {
                             }
                         }
                         onClicked: {
-                            handleClick(-appletButtonRect.mapFromItem(panelRoot,0,0).x, appletFrame.mapFromItem(null,0,0).y)
+                            handleClick(-appletButtonRect.mapFromItem(panelRoot,0,0).x, 600)
                         }
                     }
                 }
