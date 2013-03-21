@@ -51,7 +51,7 @@ RocketBar::Window::~Window()
     delete mMenu;
 }
 
-void RocketBar::Window::handleClick()
+void RocketBar::Window::handleClick(int x, int y)
 {
-    mMenu->show();
+    mMenu->popup(QPoint(x, y));
 }

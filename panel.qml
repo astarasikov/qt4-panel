@@ -189,7 +189,8 @@ Rectangle {
                         }
                     }
                     onClicked: {
-                        handleClick()
+                        var p = iconFrame.mapFromItem(panelRoot,0,0)
+                        handleClick(-p.x, -p.y)
                     }
                 }
             }

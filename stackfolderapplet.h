@@ -24,9 +24,13 @@ namespace RocketBar {
         QPushButton *backButton;
         QPushButton *openDolphin;
         QListWidget *listItem;
-        bool visibility;
 
     public:
+        enum {
+            Width = 500,
+            Height = 400,
+        };
+
         StackFolderApplet();
         virtual ~StackFolderApplet();
         QImage image(void);
@@ -37,7 +41,7 @@ namespace RocketBar {
         virtual void handleClick();
         virtual void handleClick(int x, int y);
         virtual void openFile(QListWidgetItem* item);
-        virtual void openFolderInDolphin();
+        virtual void openFolder();
         virtual void goBack();
         virtual void showMenu();
     };

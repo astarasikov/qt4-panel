@@ -31,7 +31,7 @@ signals:
     void iconNameChanged();
 
 public slots:
-    virtual void handleClick();
+    virtual void handleClick(int x = 0, int y = 0);
 
     virtual void close() = 0;
     virtual void destroy() = 0;

@@ -6,22 +6,22 @@ RocketBar::StackFolderApplet::StackFolderApplet()
     mWidget = new QWidget();
     mWidget->setStyleSheet("background: black; ");
     mWidget->setWindowOpacity(0.9);
-    visibility = mWidget->isVisible();
 
     folderStack = new QStack<QFileInfo>();
-    listItem = new QListWidget();
+    listItem = new QListWidget(mWidget);
     listItem->connect(listItem, SIGNAL(itemPressed(QListWidgetItem*)), this, SLOT(openFile(QListWidgetItem*)));
     layout = new QGridLayout();
-    backButton = new QPushButton("Go back");
+    backButton = new QPushButton(tr("Go back"));
     backButton->connect(backButton, SIGNAL(clicked()), this, SLOT(goBack()));
-    openDolphin = new QPushButton("Open in Dolphin");
-    openDolphin->connect(openDolphin, SIGNAL(clicked()), this, SLOT(openFolderInDolphin()));
+    openDolphin = new QPushButton(tr("Open..."));
+    openDolphin->connect(openDolphin, SIGNAL(clicked()), this, SLOT(openFolder()));
     layout->addWidget(backButton,0,0);
     layout->addWidget(openDolphin,0,1);
     layout->addWidget(listItem,1,0,1,2);
     mWidget->setLayout(layout);
+    mWidget->setFixedSize(Width, Height);
 
-    mMenu->addMenu("SubMenu");
+    mMenu->addMenu(tr("SubMenu"));
     mMenu->addSeparator();
     QAction *action = new QAction(tr("Simulate Click"), this);
     connect(action, SIGNAL(triggered()), this, SLOT(handleClick(int, int)));
@@ -50,9 +50,13 @@ void RocketBar::StackFolderApplet::handleClick()
 
 void RocketBar::StackFolderApplet::handleClick(int x,int y)
 {
-    int height = 400, width = 500;
-    mWidget->setGeometry(x-width/2, y, width, height);
-    initApplet("/home/");
+    if (!mWidget->isVisible()) {
+        mWidget->move(x - Width / 2, y);
+        initApplet(QDir::homePath());
+    }
+    else {
+        mWidget->setVisible(false);
+    }
 }
 
 void RocketBar::StackFolderApplet::showMenu()
@@ -62,49 +66,50 @@ void RocketBar::StackFolderApplet::showMenu()
 
 void RocketBar::StackFolderApplet::openFile(QListWidgetItem* item){
     QString path = folder.absolutePath().append("/"+item->text());
-    QFileInfo *file = new QFileInfo(path);
-    if (file->isDir()){
-        folderStack->push(*file);
+    QFileInfo file(path);
+    if (file.isDir()){
+        folderStack->push(file);
         initApplet(path);
     }
     else
     {
-        //is shit, but works
         QStringList parameters;
-        qDebug()<<path;
         parameters<<"file:"+path;
-        QProcess::startDetached("dolphin", parameters);
+        QProcess::startDetached("xdg-open", parameters);
     }
 }
 
-void RocketBar::StackFolderApplet::openFolderInDolphin(){
+void RocketBar::StackFolderApplet::openFolder(){
     QString path = folder.absolutePath();
     QStringList commandLineParameters;
     commandLineParameters<<"file:"+path;
-    QProcess::startDetached("dolphin", commandLineParameters);
+    QProcess::startDetached("xdg-open", commandLineParameters);
 }
 
 void RocketBar::StackFolderApplet::initApplet(QString path){
     folder = QDir(path);
     QStringList list = folder.entryList();
     listItem->clear();
-    for (int i=2; i<list.size(); i++){
-        QFileInfo info(folder.absolutePath().append("/"+list.at(i)));
+    for (int i=0; i<list.size(); i++){
+        QString name = list.at(i);
+        if (name.compare(".") == 0 || name.compare("..") == 0) {
+            continue;
+        }
+
+        QFileInfo info(folder.absolutePath().append("/"+name));
         QFileIconProvider ip;
         QIcon icon=ip.icon(info);
-        QListWidgetItem *item = new QListWidgetItem(icon, list.at(i));
+        QListWidgetItem *item = new QListWidgetItem(icon, name);
         listItem->addItem(item);
     }
 
     mWidget->setWindowTitle(folder.dirName());
-    mWidget->setVisible(!visibility);
+    mWidget->setVisible(true);
 }
 
 void RocketBar::StackFolderApplet::goBack(){
     if (!folderStack->isEmpty()){
         QFileInfo file = folderStack->pop();
         initApplet(file.absolutePath());
-        visibility = false;
     }
-
 }

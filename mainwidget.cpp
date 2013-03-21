@@ -106,8 +106,8 @@ void RocketBar::MainWidget::updateWindows
 
 void RocketBar::MainWidget::contextMenuEvent(QContextMenuEvent *evt) {
     QPoint p(this->x() + evt->x(), this->y() + evt->y());
-    evt->accept();
-    mContextMenu->popup(p);
+    //evt->accept();
+    //mContextMenu->popup(p);
 }
 
 void RocketBar::MainWidget::buildMenu(void) {
