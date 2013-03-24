@@ -49,6 +49,7 @@ public slots:
     virtual void goBack();
     virtual void showMenu();
     virtual void handleContextMenu(int x, int y);
+    virtual void trash();
 };
 
 } //namespace RocketBar

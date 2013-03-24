@@ -59,6 +59,6 @@ void RocketBar::Window::handleClick(int x, int y)
 }
 
 void RocketBar::Window::handleContextMenu(int x, int y){
-    QPoint p = QPoint(x,y-mMenu->height()/2.2);
-    mMenu->popup(p);
+    mMenu->popup(QPoint(0,0));
+    mMenu->move(QPoint(x,y-mMenu->height()/2.2));
 }
