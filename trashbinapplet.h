@@ -12,6 +12,9 @@ class TrashBinApplet : public RocketBar::StackFolderApplet
 protected:
     QFileSystemWatcher *mFsWatcher;
     QImage mAppletImage;
+    bool confirmDeleting;
+    QPushButton *trashButton;
+    bool removeDir(const QString &dirName);
 
 public:
     TrashBinApplet();
@@ -20,6 +23,9 @@ public:
     virtual QString name();
 public slots:
     void directoryChanged(QString str);
+    void initApplet(QString str);
+    void trash();
+
 };
 
 } //namespace RocketBar
