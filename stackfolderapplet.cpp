@@ -4,44 +4,36 @@
 
 
 RocketBar::StackFolderApplet::StackFolderApplet(QString path)
-    :mDirPath(path), mMenu(new QMenu())
+    :mDirPath(path)
 {
     mWidget = new QWidget();
     mWidget->setStyleSheet("background: black; ");
     mWidget->setWindowOpacity(0.9);
 
-    folderStack = new QStack<QFileInfo>();
-    listItem = new QListWidget(mWidget);
-    listItem->connect(listItem, SIGNAL(itemPressed(QListWidgetItem*)), this, SLOT(openFile(QListWidgetItem*)));
-    layout = new QGridLayout();
-    backButton = new QPushButton(tr("Go back"));
-    backButton->connect(backButton, SIGNAL(clicked()), this, SLOT(goBack()));
-    openDolphin = new QPushButton(tr("Open..."));
-    openDolphin->connect(openDolphin, SIGNAL(clicked()), this, SLOT(openFolder()));
-    layout->addWidget(backButton,0,0);
-    layout->addWidget(openDolphin,0,1);
-    layout->addWidget(listItem,1,0,1,2);
-    mWidget->setLayout(layout);
+    mFolderStack = new QStack<QFileInfo>();
+    mListItem = new QListWidget(mWidget);
+    mListItem->connect(mListItem, SIGNAL(itemPressed(QListWidgetItem*)), this, SLOT(mOpenFile(QListWidgetItem*)));
+    mLayout = new QGridLayout();
+    mBackButton = new QPushButton(tr("Go back"));
+    mBackButton->connect(mBackButton, SIGNAL(clicked()), this, SLOT(goBack()));
+    mOpenFile = new QPushButton(tr("Open..."));
+    mOpenFile->connect(mOpenFile, SIGNAL(clicked()), this, SLOT(openFolder()));
+    mLayout->addWidget(mBackButton,0,0);
+    mLayout->addWidget(mOpenFile,0,1);
+    mLayout->addWidget(mListItem,1,0,1,2);
+    mWidget->setLayout(mLayout);
     mWidget->setFixedSize(Width, Height);
-
-    mMenu->addMenu(tr("SubMenu"));
-    mMenu->addSeparator();
-    QAction *action = new QAction(tr("Simulate Click"), this);
-    connect(action, SIGNAL(triggered()), this, SLOT(handleClick()));
-    mMenu->addAction(action);
-
     mWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(mWidget, SIGNAL(customContextMenuRequested(const QPoint&)),
         this, SLOT(handleContextMenu(QPoint)));
 }
 
 RocketBar::StackFolderApplet::~StackFolderApplet() {
-    delete folderStack;
-    delete layout;
-    delete backButton;
-    delete openDolphin;
-    delete listItem;
-    delete mMenu;
+    delete mFolderStack;
+    delete mLayout;
+    delete mBackButton;
+    delete mOpenFile;
+    delete mListItem;
     delete mWidget;
 }
 
@@ -55,11 +47,6 @@ QString RocketBar::StackFolderApplet::name()
     return "StackFolderApplet";
 }
 
-void RocketBar::StackFolderApplet::handleClick()
-{
-
-}
-
 void RocketBar::StackFolderApplet::handleClick(int x,int y)
 {
     if (!mWidget->isVisible()) {
@@ -71,16 +58,11 @@ void RocketBar::StackFolderApplet::handleClick(int x,int y)
     }
 }
 
-void RocketBar::StackFolderApplet::showMenu()
-{
-    mMenu->show();
-}
-
 void RocketBar::StackFolderApplet::openFile(QListWidgetItem* item){
     QString path = folder.path().append("/"+item->text());
     QFileInfo file(path);
     if (file.isDir()){
-        folderStack->push(file);
+        mFolderStack->push(file);
         initApplet(path);
     }
     else
@@ -107,7 +89,7 @@ void RocketBar::StackFolderApplet::initApplet(QString path){
 
 void RocketBar::StackFolderApplet::initFileList(){
     QStringList list = folder.entryList();
-    listItem->clear();
+    mListItem->clear();
     for (int i=0; i<list.size(); i++){
         QString name = list.at(i);
         if (name.compare(".") == 0 || name.compare("..") == 0) {
@@ -117,24 +99,18 @@ void RocketBar::StackFolderApplet::initFileList(){
         QFileIconProvider ip;
         QIcon icon=ip.icon(info);
         QListWidgetItem *item = new QListWidgetItem(icon, name);
-        listItem->addItem(item);
+        mListItem->addItem(item);
     }
 
 }
 
 void RocketBar::StackFolderApplet::goBack(){
-    if (!folderStack->isEmpty()){
-        QFileInfo file = folderStack->pop();
+    if (!mFolderStack->isEmpty()){
+        QFileInfo file = mFolderStack->pop();
         initApplet(file.absolutePath());
     }
 }
 
 void RocketBar::StackFolderApplet::handleContextMenu(int x, int y) {
-    mMenu->popup(QPoint(0,0));
-    mMenu->move(QPoint(x, y - 2*mMenu->height()));
-}
-
-void RocketBar::StackFolderApplet::trash(){
-
 }
 

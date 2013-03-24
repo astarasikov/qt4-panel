@@ -33,12 +33,12 @@ QString RocketBar::TestApplet::name()
     return "TestApplet";
 }
 
-void RocketBar::TestApplet::handleClick()
+void RocketBar::TestApplet::handleClick(int x, int y)
 {
     mWidget->setVisible(!mWidget->isVisible());
 }
 
-void RocketBar::TestApplet::showMenu()
+void RocketBar::TestApplet::handleContextMenu(int x, int y)
 {
-    mMenu->show();
+    mMenu->popup(QPoint(x, y));
 }

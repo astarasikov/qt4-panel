@@ -2,9 +2,9 @@
 
 RocketBar::TrashBinApplet::TrashBinApplet()
     : RocketBar::StackFolderApplet::StackFolderApplet
-      (QDir::homePath() + "/.local/share/Trash"),
+      (trashPath() + "/files"),
       mFsWatcher(new QFileSystemWatcher()),
-      mAppletImage(QImage())
+      mAppletImage(QImage()), mMenu(new QMenu())
 {
     mFsWatcher->addPath(mDirPath);
     connect(mFsWatcher, SIGNAL(directoryChanged(QString)),
@@ -13,16 +13,15 @@ RocketBar::TrashBinApplet::TrashBinApplet()
             this, SLOT(directoryChanged(QString)));
     directoryChanged(mDirPath);
 
-    confirmDeleting = false;
     trashButton = new QPushButton(tr("Trash"));
-    trashButton->connect(trashButton, SIGNAL(clicked()), this, SLOT(trash()));
-    delete layout;
-    layout = new QGridLayout();
-    layout->addWidget(backButton,0,0);
-    layout->addWidget(trashButton,0,1);
-    layout->addWidget(openDolphin,0,2);
-    layout->addWidget(listItem,1,0,1,3);
-    mWidget->setLayout(layout);
+    trashButton->connect(trashButton, SIGNAL(clicked()),
+                         this, SLOT(clearTrash()));
+    mLayout->addWidget(trashButton, 0, 2);
+
+    QAction *aRemove = new QAction(QIcon::fromTheme("remove"),
+                                  tr("Clear Trash"), this);
+    connect(aRemove, SIGNAL(triggered()), this, SLOT(clearTrash()));
+    mMenu->addAction(aRemove);
 }
 
 RocketBar::TrashBinApplet::~TrashBinApplet(){
@@ -44,10 +43,10 @@ void RocketBar::TrashBinApplet::directoryChanged(QString str)
     Q_UNUSED(str);
     QDir dir(mDirPath);
     if (dir.count() < 3) {
-        mAppletImage = QImage(":/trash.png");
+        mAppletImage = QIcon::fromTheme("user-trash").pixmap(32, 32).toImage();
     }
     else {
-        mAppletImage = QImage(":/trash-full.png");
+        mAppletImage = QIcon::fromTheme("user-trash-full").pixmap(32, 32).toImage();
     }
     emit imageChanged();
 }
@@ -55,61 +54,41 @@ void RocketBar::TrashBinApplet::directoryChanged(QString str)
 
 void RocketBar::TrashBinApplet::initApplet(QString path){
     trashButton->setText(tr("Trash"));
-    confirmDeleting=false;
     StackFolderApplet::initApplet(path);
 }
 
-void RocketBar::TrashBinApplet::trash(){
-    if (!confirmDeleting){
-        confirmDeleting = true;
-        trashButton->setText(tr("Click once again to trash"));
-        mWidget->update();
-    }
-    else{
-        confirmDeleting = false;
-        trashButton->setText(tr("Trash"));
-        mWidget->update();
-
-        QStringList list = folder.entryList();
-        for (int i=0; i<list.size(); i++){
-            QString name = list.at(i);
-
-            if (name.compare(".") == 0 || name.compare("..") == 0) {
-                continue;
-            }
-            QString path = folder.path().append("/"+name);
-            bool res;
-            if (QFileInfo(path).isDir()){
-                res = removeDir(path);
-            }
-            else
-                QFile::remove(path);
-
-        }
-        initApplet(folder.path());
-    }
+void RocketBar::TrashBinApplet::clearTrash()
+{
+    clearDir(trashPath() + "/files");
+    clearDir(trashPath() + "/info");
+    directoryChanged(mDirPath);
 }
 
-bool RocketBar::TrashBinApplet::removeDir(const QString &dirName)
-    {
-        bool result = true;
-        QDir dir(dirName);
+void RocketBar::TrashBinApplet::handleContextMenu(int x, int y)
+{
+    mMenu->popup(QPoint(x, y));
+}
 
-        if (dir.exists(dirName)) {
-            Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
-                if (info.isDir()) {
-                    result = removeDir(info.absoluteFilePath());
-                }
-                else {
-                    result = QFile::remove(info.absoluteFilePath());
-                }
+QString RocketBar::TrashBinApplet::trashPath()
+{
+    //TODO: check XDG trash path here
+    return QDir::homePath() + "/.local/share/Trash";
+}
 
-                if (!result) {
-                    return result;
-                }
-            }
-            result = dir.rmdir(dirName);
-        }
-
-        return result;
+void RocketBar::TrashBinApplet::clearDir(QString str)
+{
+    QDir d(str);
+    if (!d.exists()) {
+        return;
     }
+    Q_FOREACH(QFileInfo info,
+              d.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst))
+    {
+        if (info.isDir()) {
+            clearDir(info.absoluteFilePath());
+        }
+        else {
+            QFile::remove(info.absoluteFilePath());
+        }
+    }
+}

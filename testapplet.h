@@ -23,8 +23,8 @@ public:
     virtual QString name();
 
 public slots:
-    virtual void handleClick();
-    virtual void showMenu();
+    virtual void handleClick(int x, int y);
+    virtual void handleContextMenu(int x, int y);
 };
 
 } //namespace RocketBar

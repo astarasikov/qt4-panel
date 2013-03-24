@@ -19,14 +19,13 @@ class StackFolderApplet : public Applet {
 
 protected:
     QString mDirPath;
-    QMenu *mMenu;
     QWidget *mWidget;
     QDir folder;
-    QStack<QFileInfo> *folderStack;
-    QGridLayout *layout;
-    QPushButton *backButton;
-    QPushButton *openDolphin;
-    QListWidget *listItem;
+    QStack<QFileInfo> *mFolderStack;
+    QGridLayout *mLayout;
+    QPushButton *mBackButton;
+    QPushButton *mOpenFile;
+    QListWidget *mListItem;
 
 public:
     enum {
@@ -42,14 +41,11 @@ public:
     void initFileList();
 
 public slots:
-    virtual void handleClick();
-    virtual void handleClick(int x, int y);
     virtual void openFile(QListWidgetItem* item);
     virtual void openFolder();
     virtual void goBack();
-    virtual void showMenu();
+    virtual void handleClick(int x, int y);
     virtual void handleContextMenu(int x, int y);
-    virtual void trash();
 };
 
 } //namespace RocketBar

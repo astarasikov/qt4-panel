@@ -3,7 +3,5 @@
         <file>panel.qml</file>
         <file alias="folder.png">panel_vertical.qml</file>
         <file alias="folder.png">img/folder.png</file>
-        <file alias="trash.png">img/trash.png</file>
-        <file alias="trash-full.png">img/trash-full.png</file>
     </qresource>
 </RCC>

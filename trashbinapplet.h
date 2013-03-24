@@ -3,6 +3,7 @@
 
 #include "stackfolderapplet.h"
 #include <QFileSystemWatcher>
+#include <QMenu>
 
 namespace RocketBar{
 
@@ -12,9 +13,11 @@ class TrashBinApplet : public RocketBar::StackFolderApplet
 protected:
     QFileSystemWatcher *mFsWatcher;
     QImage mAppletImage;
-    bool confirmDeleting;
+    QMenu *mMenu;
+
     QPushButton *trashButton;
-    bool removeDir(const QString &dirName);
+    QString trashPath();
+    void clearDir(QString str);
 
 public:
     TrashBinApplet();
@@ -24,8 +27,8 @@ public:
 public slots:
     void directoryChanged(QString str);
     void initApplet(QString str);
-    void trash();
-
+    void clearTrash();
+    virtual void handleContextMenu(int x, int y);
 };
 
 } //namespace RocketBar

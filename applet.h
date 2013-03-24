@@ -20,8 +20,8 @@ public:
     virtual QString name(void) = 0;
 
 public slots:
-    virtual void handleClick(void) = 0;
-    virtual void showMenu(void) = 0;
+    virtual void handleClick(int x, int y) = 0;
+    virtual void handleContextMenu(int x, int y) = 0;
 signals:
     void imageChanged();
     void nameChanged();
