@@ -3,3 +3,4 @@ Makefile
 *.user
 rocketbarv2
 moc_*
+qrc_*
