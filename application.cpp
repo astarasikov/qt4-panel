@@ -29,8 +29,8 @@ RocketBar::Application::~Application() {
 
 int RocketBar::Application::run()
 {
-    RocketBar::MainWidget w(mContext);
-    w.show();
+    mWidget = new RocketBar::MainWidget(mContext);
+    mWidget->show();
     return exec();
 }
 
