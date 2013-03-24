@@ -17,7 +17,6 @@ RocketBar::ThemeManager::ThemeManager(QSettings &settings)
 
 RocketBar::ThemeManager::~ThemeManager()
 {
-    mSettings.setValue(KEY_THEME_NAME, mCustomThemeName);
 }
 
 QUrl RocketBar::ThemeManager::qml(QMLtypes type) {
@@ -50,6 +49,7 @@ QList<QString> RocketBar::ThemeManager::themes()
 
 void RocketBar::ThemeManager::setTheme(QString name) {
     mCustomThemeName = name;
+    mSettings.setValue(KEY_THEME_NAME, mCustomThemeName);
 }
 
 void RocketBar::ThemeManager::update()

@@ -19,8 +19,8 @@ protected:
 public:
     TestApplet();
     virtual ~TestApplet();
-    QImage image(void);
-    QString name();
+    virtual QImage image(void);
+    virtual QString name();
 
 public slots:
     virtual void handleClick();

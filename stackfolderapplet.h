@@ -10,42 +10,47 @@
 #include <QListWidgetItem>
 #include <QFileIconProvider>
 #include <QPushButton>
+#include <QContextMenuEvent>
 
 namespace RocketBar {
 
-    class StackFolderApplet : public Applet{
-        Q_OBJECT
-    protected:
-        QMenu *mMenu;
-        QWidget *mWidget;
-        QDir folder;
-        QStack<QFileInfo> *folderStack;
-        QGridLayout *layout;
-        QPushButton *backButton;
-        QPushButton *openDolphin;
-        QListWidget *listItem;
+class StackFolderApplet : public Applet {
+    Q_OBJECT
 
-    public:
-        enum {
-            Width = 500,
-            Height = 400,
-        };
+protected:
+    QString mDirPath;
+    QMenu *mMenu;
+    QWidget *mWidget;
+    QDir folder;
+    QStack<QFileInfo> *folderStack;
+    QGridLayout *layout;
+    QPushButton *backButton;
+    QPushButton *openDolphin;
+    QListWidget *listItem;
 
-        StackFolderApplet();
-        virtual ~StackFolderApplet();
-        QImage image(void);
-        QString name();
-        void initApplet(QString path);
-
-    public slots:
-        virtual void handleClick();
-        virtual void handleClick(int x, int y);
-        virtual void openFile(QListWidgetItem* item);
-        virtual void openFolder();
-        virtual void goBack();
-        virtual void showMenu();
+public:
+    enum {
+        Width = 500,
+        Height = 400
     };
-}
 
+    StackFolderApplet(QString path = QDir::homePath());
+    virtual ~StackFolderApplet();
+    virtual QImage image(void);
+    virtual QString name();
+    void initApplet(QString path);
+    void initFileList();
+
+public slots:
+    virtual void handleClick();
+    virtual void handleClick(int x, int y);
+    virtual void openFile(QListWidgetItem* item);
+    virtual void openFolder();
+    virtual void goBack();
+    virtual void showMenu();
+    virtual void handleContextMenu(int x, int y);
+};
+
+} //namespace RocketBar
 
 #endif // STACKFOLDERAPPLET_H

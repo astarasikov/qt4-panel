@@ -10,7 +10,7 @@ static const QString ApplicationName("RocketBar");
 static const QString ApplicationVersion("2.0");
 
 static const int DefaultPanelHeight = 50;
-static const int DefaultPanelWidth = 50;
+static const int DefaultPanelWidth = 1024;
 }
 
 #endif // GLOBAL_DEFINES_H

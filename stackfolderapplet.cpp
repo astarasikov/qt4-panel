@@ -1,7 +1,10 @@
 #include "stackfolderapplet.h"
+#include "trashbinapplet.h"
+#include <QDesktopWidget>
 
-RocketBar::StackFolderApplet::StackFolderApplet()
-    :mMenu(new QMenu())
+
+RocketBar::StackFolderApplet::StackFolderApplet(QString path)
+    :mDirPath(path), mMenu(new QMenu())
 {
     mWidget = new QWidget();
     mWidget->setStyleSheet("background: black; ");
@@ -24,11 +27,20 @@ RocketBar::StackFolderApplet::StackFolderApplet()
     mMenu->addMenu(tr("SubMenu"));
     mMenu->addSeparator();
     QAction *action = new QAction(tr("Simulate Click"), this);
-    connect(action, SIGNAL(triggered()), this, SLOT(handleClick(int, int)));
+    connect(action, SIGNAL(triggered()), this, SLOT(handleClick()));
     mMenu->addAction(action);
+
+    mWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(mWidget, SIGNAL(customContextMenuRequested(const QPoint&)),
+        this, SLOT(handleContextMenu(QPoint)));
 }
 
 RocketBar::StackFolderApplet::~StackFolderApplet() {
+    delete folderStack;
+    delete layout;
+    delete backButton;
+    delete openDolphin;
+    delete listItem;
     delete mMenu;
     delete mWidget;
 }
@@ -45,14 +57,14 @@ QString RocketBar::StackFolderApplet::name()
 
 void RocketBar::StackFolderApplet::handleClick()
 {
-    mWidget->setVisible(!mWidget->isVisible());
+
 }
 
 void RocketBar::StackFolderApplet::handleClick(int x,int y)
 {
     if (!mWidget->isVisible()) {
-        mWidget->move(x - Width / 2, y);
-        initApplet(QDir::homePath());
+        mWidget->move(x - Width / 2, y - Height);
+        initApplet(mDirPath);
     }
     else {
         mWidget->setVisible(false);
@@ -65,7 +77,7 @@ void RocketBar::StackFolderApplet::showMenu()
 }
 
 void RocketBar::StackFolderApplet::openFile(QListWidgetItem* item){
-    QString path = folder.absolutePath().append("/"+item->text());
+    QString path = folder.path().append("/"+item->text());
     QFileInfo file(path);
     if (file.isDir()){
         folderStack->push(file);
@@ -80,7 +92,7 @@ void RocketBar::StackFolderApplet::openFile(QListWidgetItem* item){
 }
 
 void RocketBar::StackFolderApplet::openFolder(){
-    QString path = folder.absolutePath();
+    QString path = folder.path();
     QStringList commandLineParameters;
     commandLineParameters<<"file:"+path;
     QProcess::startDetached("xdg-open", commandLineParameters);
@@ -88,6 +100,12 @@ void RocketBar::StackFolderApplet::openFolder(){
 
 void RocketBar::StackFolderApplet::initApplet(QString path){
     folder = QDir(path);
+    initFileList();
+    mWidget->setWindowTitle(folder.dirName());
+    mWidget->setVisible(true);
+}
+
+void RocketBar::StackFolderApplet::initFileList(){
     QStringList list = folder.entryList();
     listItem->clear();
     for (int i=0; i<list.size(); i++){
@@ -95,7 +113,6 @@ void RocketBar::StackFolderApplet::initApplet(QString path){
         if (name.compare(".") == 0 || name.compare("..") == 0) {
             continue;
         }
-
         QFileInfo info(folder.absolutePath().append("/"+name));
         QFileIconProvider ip;
         QIcon icon=ip.icon(info);
@@ -103,8 +120,6 @@ void RocketBar::StackFolderApplet::initApplet(QString path){
         listItem->addItem(item);
     }
 
-    mWidget->setWindowTitle(folder.dirName());
-    mWidget->setVisible(true);
 }
 
 void RocketBar::StackFolderApplet::goBack(){
@@ -113,3 +128,8 @@ void RocketBar::StackFolderApplet::goBack(){
         initApplet(file.absolutePath());
     }
 }
+
+void RocketBar::StackFolderApplet::handleContextMenu(int x, int y) {
+    mMenu->popup(QPoint(x, y - 2*mMenu->height()));
+}
+

@@ -1,4 +1,6 @@
 #include "windowmanager.h"
+#include <QDesktopWidget>
+#include <QApplication>
 
 #if defined(ROCKETBAR_WM_X11)
 #include "windowmanagerx11.h"
@@ -53,5 +55,10 @@ RocketBar::Window::~Window()
 
 void RocketBar::Window::handleClick(int x, int y)
 {
-    mMenu->popup(QPoint(x, y));
+    activate();
+}
+
+void RocketBar::Window::handleContextMenu(int x, int y){
+    QPoint p = QPoint(x,y-mMenu->height()/2.2);
+    mMenu->popup(p);
 }

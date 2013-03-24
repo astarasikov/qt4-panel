@@ -4,6 +4,7 @@
 #include <QDeclarativeView>
 #include <QDeclarativeComponent>
 #include <QMenu>
+#include <QList>
 #include "context.h"
 #include "windowmanager.h"
 
@@ -19,17 +20,23 @@ public:
 protected:
     RocketBar::Context *mContext;
     QMenu *mContextMenu;
+    QList<QObject *> mTaskList;
+    QList<QObject *> mAppletList;
+    QRect screenRect;
 
     void buildMenu();
     void buildLauncher();
     void buildApplets();
 
 protected slots:
-    void contextMenuEvent(QContextMenuEvent *event);
+    void changeTheme();
     void updateWindow();
 
 public slots:
     void updateWindows(WindowManager::WindowList &list);
+    void contextMenuHandler(int x, int y);
+    void updateAppletDisplay();
+    QRect getScreenRect();
 };
 
 } //namespace RocketBar

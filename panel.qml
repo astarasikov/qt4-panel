@@ -5,7 +5,16 @@ import ru.rosalab.rocketbar 2.0
 Rectangle {
     id:panelRoot
     width: 1600
-    height: 30
+    height: 40
+
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.RightButton | Qt.LeftButton
+        onClicked: {
+            if (mouse.button === Qt.RightButton)
+                rootPanel.contextMenuHandler(mouse.x, mouse.y)
+        }
+    }
 
     gradient: Gradient {
         GradientStop {
@@ -177,6 +186,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     hoverEnabled: true
+                    acceptedButtons: Qt.RightButton | Qt.LeftButton
 
                     onHoveredChanged: {
                         if (containsMouse) {
@@ -190,7 +200,11 @@ Rectangle {
                     }
                     onClicked: {
                         var p = iconFrame.mapFromItem(panelRoot,0,0)
-                        handleClick(-p.x, -p.y)
+                        var rect = rootPanel.getScreenRect();
+                        if(mouse.button === Qt.LeftButton)
+                            handleClick(-p.x, rect.height-p.y)
+                        else
+                            handleContextMenu(-p.x + mouse.x, rect.height-p.y+mouse.y)
                     }
                 }
             }
@@ -217,9 +231,7 @@ Rectangle {
                 anchors.left: tasksArea.right
                 height:panelMainArea.height
                 width: 200
-
                 clip: true
-
 
                 model: appletListModel
                 delegate: Rectangle {
@@ -239,13 +251,20 @@ Rectangle {
                             width: appletButtonRect.width - 4
                             height: appletButtonRect.height - 4
                             anchors.centerIn: parent
-                            source: "image://applet/" + name
+                            /* now this is a hack. Image is kind of stupid
+                               changing the actual image in the ImageProvider
+                               does not lead to the redisplay. Therefore, generate
+                               unique paths each time and make ImageProvider
+                               ignore the 'time' suffix
+                            */
+                            source: "image://applet/" + name + "|" + Date.now().toString()
                         }
                     }
 
                     MouseArea {
                         anchors.fill: parent
                         hoverEnabled: true
+                        acceptedButtons: Qt.LeftButton | Qt.RightButton
 
                         onHoveredChanged: {
                             if (containsMouse) {
@@ -257,8 +276,16 @@ Rectangle {
                                 appletFrame.color = "#303030"
                             }
                         }
+
                         onClicked: {
-                            handleClick(-appletButtonRect.mapFromItem(panelRoot,0,0).x, 600)
+                            var rect = rootPanel.getScreenRect();
+                            if (mouse.button === Qt.LeftButton){
+                                handleClick(-appletButtonRect.mapFromItem(panelRoot,0,0).x, rect.height+mouse.y)
+                            }
+                            else{
+
+                                handleContextMenu(-appletButtonRect.mapFromItem(panelRoot,0,0).x + mouse.x, rect.height+mouse.y)
+                            }
                         }
                     }
                 }

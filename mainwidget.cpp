@@ -5,6 +5,7 @@
 #include "imageprovider.h"
 #include "testapplet.h"
 #include "stackfolderapplet.h"
+#include "trashbinapplet.h"
 
 #include <QGraphicsObject>
 #include <QDesktopWidget>
@@ -18,13 +19,16 @@
 
 RocketBar::MainWidget::MainWidget(
         RocketBar::Context *config, QWidget *parent)
-    : QDeclarativeView(parent), mContext(config)
+    : QDeclarativeView(parent), mContext(config),
+      mTaskList(QList<QObject*> ()),
+      mAppletList(QList<QObject*> ())
 {
     /* initialize a borderless panel window */
     setFocus(Qt::ActiveWindowFocusReason);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_TranslucentBackground);
     setStyleSheet("border-style: none;background:transparent;");
+    setResizeMode(QDeclarativeView::SizeRootObjectToView);
     buildMenu();
 
     engine()->addImageProvider(QLatin1String("xdg"), mContext->mImageProvider);
@@ -44,7 +48,7 @@ RocketBar::MainWidget::~MainWidget() {
 }
 
 void RocketBar::MainWidget::updateWindow() {
-    QRect screenRect = QApplication::desktop()->screenGeometry();
+    screenRect = QApplication::desktop()->screenGeometry();
 
     int x(0), y(0), w(0), h(0);
     RocketBar::ScreenEdge o = mContext->screenEdge();
@@ -79,9 +83,10 @@ void RocketBar::MainWidget::updateWindow() {
         setSource(mContext->themeManager().qml(ThemeManager::PANEL_VERTICAL));
     }
 
-    QGraphicsObject *root = rootObject();
-    root->setProperty("width", w);
-    root->setProperty("height", h);
+    //XXX: wtf is this?
+    rootContext()->setContextProperty("rootPanel", this);
+    rootContext()->setProperty("width", this->width());
+    rootContext()->setProperty("height", this->height());
     move(x, y);
 
     buildLauncher();
@@ -91,23 +96,26 @@ void RocketBar::MainWidget::updateWindow() {
 void RocketBar::MainWidget::updateWindows
 (RocketBar::WindowManager::WindowList &list)
 {
-    QList<QObject*> windowList;
-
-    QVariant v = rootContext()->contextProperty("taskListModel");
-    QList<QObject*> oldList = v.value<QList<QObject*> >();
-    foreach(QObject *handler, oldList) {
+    foreach(QObject *handler, mTaskList) {
         delete handler;
     }
-    oldList.clear();
-
+    mTaskList.clear();
+    mTaskList.append(list);
     rootContext()->setContextProperty("tasksListModel",
         QVariant::fromValue(list));
 }
 
-void RocketBar::MainWidget::contextMenuEvent(QContextMenuEvent *evt) {
-    QPoint p(this->x() + evt->x(), this->y() + evt->y());
-    //evt->accept();
-    //mContextMenu->popup(p);
+void RocketBar::MainWidget::changeTheme()
+{
+    static int idx=0;
+    RocketBar::ThemeManager& themeManager = mContext->themeManager();
+    themeManager.update();
+    QList<QString> themes = themeManager.themes();
+    if (themes.length()) {
+        idx = (idx + 1) % themes.length();
+        themeManager.setTheme(themes.at(idx));
+    }
+    updateWindow();
 }
 
 void RocketBar::MainWidget::buildMenu(void) {
@@ -119,9 +127,13 @@ void RocketBar::MainWidget::buildMenu(void) {
     QAction *aRefresh = new QAction(tr("&Refresh"), this);
     connect(aRefresh, SIGNAL(triggered()), this, SLOT(updateWindow()));
 
+    QAction *aTheme = new QAction(tr("&Change Theme"), this);
+    connect(aTheme, SIGNAL(triggered()), this, SLOT(changeTheme()));
+
     mContextMenu->addSeparator();
     mContextMenu->addAction(aQuit);
     mContextMenu->addAction(aRefresh);
+    mContextMenu->addAction(aTheme);
 }
 
 void RocketBar::MainWidget::buildLauncher()
@@ -142,18 +154,40 @@ void RocketBar::MainWidget::buildLauncher()
 
 void RocketBar::MainWidget::buildApplets()
 {
-    QList<QObject*> appletList;
+    if (mAppletList.isEmpty()) {
+        StackFolderApplet *sfapplet = new StackFolderApplet();
+        connect(sfapplet, SIGNAL(imageChanged()), this, SLOT(updateAppletDisplay()));
+        mAppletList.append(sfapplet);
 
-    StackFolderApplet *sfapplet = new StackFolderApplet();
-    mContext->mAppletImageProvider->update(sfapplet->name(), sfapplet->image());
-    appletList.append(sfapplet);
+        TrashBinApplet *trashapplet = new TrashBinApplet();
+        connect(trashapplet, SIGNAL(imageChanged()), this, SLOT(updateAppletDisplay()));
+        mAppletList.append(trashapplet);
 
-    for (int i = 0; i < 4; i++) {
-        TestApplet *applet = new TestApplet();
-        mContext->mAppletImageProvider->update(applet->name(), applet->image());
-        appletList.append(applet);
+        for (int i = 0; i < 3; i++) {
+            TestApplet *applet = new TestApplet();
+            connect(applet, SIGNAL(imageChanged()), this, SLOT(updateAppletDisplay()));
+            mAppletList.append(applet);
+        }
     }
+    updateAppletDisplay();
+}
 
+void RocketBar::MainWidget::contextMenuHandler(int x, int y){
+    QPoint p(x,y);
+    QPoint globalPos = mapToGlobal(p);
+    mContextMenu->popup(globalPos);
+}
+
+void RocketBar::MainWidget::updateAppletDisplay()
+{
+    foreach (QObject *o, mAppletList) {
+        Applet *a = reinterpret_cast<Applet*>(o);
+        mContext->mAppletImageProvider->update(a->name(), a->image());
+    }
     rootContext()->setContextProperty("appletListModel",
-                                      QVariant::fromValue(appletList));
+                                      QVariant::fromValue(mAppletList));
+}
+
+QRect RocketBar::MainWidget::getScreenRect(){
+    return screenRect;
 }

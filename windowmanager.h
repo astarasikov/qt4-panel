@@ -32,6 +32,7 @@ signals:
 
 public slots:
     virtual void handleClick(int x = 0, int y = 0);
+    virtual void handleContextMenu(int x, int y);
 
     virtual void close() = 0;
     virtual void destroy() = 0;

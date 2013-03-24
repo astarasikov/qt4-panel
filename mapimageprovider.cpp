@@ -1,5 +1,7 @@
 #include "mapimageprovider.h"
 
+#include <QDebug>
+
 RocketBar::MapImageProvider::MapImageProvider()
     : QDeclarativeImageProvider(QDeclarativeImageProvider::Image)
 {
@@ -9,8 +11,14 @@ QImage RocketBar::MapImageProvider::requestImage(const QString &id,
                                                  QSize *size,
                                                  const QSize &requestedSize)
 {
-    if (mImageMap.contains(id)) {
-        QImage img = mImageMap[id];
+    QString name = id;
+    int timeIdx = name.indexOf("|");
+    if (timeIdx >= 0) {
+        name = name.left(timeIdx);
+    }
+
+    if (mImageMap.contains(name)) {
+        QImage img = mImageMap[name];
         *size = img.size();
         return img;
     }

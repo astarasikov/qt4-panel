@@ -14,6 +14,7 @@ public:
     QImage requestImage(const QString &id, QSize *size,
                         const QSize &requestedSize);
 
+public slots:
     void invalidate(void);
     void update(QString name, QImage image);
     void remove(QString name);

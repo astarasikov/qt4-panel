@@ -1,1 +1,5 @@
+Makefile
+*.o
 *.user
+rocketbarv2
+moc_*
