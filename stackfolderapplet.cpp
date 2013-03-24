@@ -130,7 +130,8 @@ void RocketBar::StackFolderApplet::goBack(){
 }
 
 void RocketBar::StackFolderApplet::handleContextMenu(int x, int y) {
-    mMenu->popup(QPoint(x, y - 2*mMenu->height()));
+    mMenu->popup(QPoint(0,0));
+    mMenu->move(QPoint(x, y - 2*mMenu->height()));
 }
 
 void RocketBar::StackFolderApplet::trash(){
