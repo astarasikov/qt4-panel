@@ -1,0 +1,10 @@
+Summary
+  This file describes the process of compiling and installing the
+  rocketbarv2 on the ROSA distribution
+  
+The build is automated. Run the script which creates the build directory structure
+and makes the project
+  ./build_rocketbar
+
+Installation (as root)
+  rpm -i --force rpmbuild/RPMS/i586/rocketbarv2-1.0-1-rosa.lts2012.0.i586.rpm
