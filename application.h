@@ -32,6 +32,7 @@ class Application : public QApplication
     Q_OBJECT
 protected:
     Context *mContext;
+    QWidget *mWidget;
 
 public:
     Application(int argc, char *argv[]);
