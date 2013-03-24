@@ -20,7 +20,6 @@ public:
 protected:
     RocketBar::Context *mContext;
     QMenu *mContextMenu;
-    QList<QObject *> mTaskList;
     QList<QObject *> mAppletList;
     QRect screenRect;
 

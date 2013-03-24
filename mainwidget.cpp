@@ -20,7 +20,6 @@
 RocketBar::MainWidget::MainWidget(
         RocketBar::Context *config, QWidget *parent)
     : QDeclarativeView(parent), mContext(config),
-      mTaskList(QList<QObject*> ()),
       mAppletList(QList<QObject*> ())
 {
     /* initialize a borderless panel window */
@@ -85,8 +84,8 @@ void RocketBar::MainWidget::updateWindow() {
 
     //XXX: wtf is this?
     rootContext()->setContextProperty("rootPanel", this);
-    rootContext()->setProperty("width", this->width());
-    rootContext()->setProperty("height", this->height());
+    rootContext()->setContextProperty("width", this->width());
+    rootContext()->setContextProperty("height", this->height());
     move(x, y);
 
     buildLauncher();
@@ -96,11 +95,13 @@ void RocketBar::MainWidget::updateWindow() {
 void RocketBar::MainWidget::updateWindows
 (RocketBar::WindowManager::WindowList &list)
 {
-    foreach(QObject *handler, mTaskList) {
+    QVariant v = rootContext()->contextProperty("taskListModel");
+    QList<QObject*> oldList = v.value<QList<QObject*> >();
+    foreach(QObject *handler, oldList) {
         delete handler;
     }
-    mTaskList.clear();
-    mTaskList.append(list);
+    oldList.clear();
+
     rootContext()->setContextProperty("tasksListModel",
         QVariant::fromValue(list));
 }
