@@ -12,14 +12,13 @@ RocketBar::ImageProvider::ImageProvider(
 QPixmap RocketBar::ImageProvider::requestPixmap(const QString &id,
     QSize *size, const QSize &requestedSize)
 {
-
-    qDebug() << "icon[ " << id ;
-
-    QIcon *icon = new QIcon(id);
-    return icon->pixmap(requestedSize);
-
-    QPixmap p = QPixmap::fromImage(QImage("/usr/share/icons/gnome/32x32/apps/gnome-terminal.png"));
-    *size = p.size();
-
-    return p;
+    QIcon icon = QIcon::fromTheme(id);
+    QPixmap pixmap = icon.pixmap(32, 32);
+    foreach (QSize s, icon.availableSizes()) {
+        if (s.width() == size->width() || s.height() == size->height()) {
+            pixmap = icon.pixmap(s);
+        }
+    }
+    *size = pixmap.size();
+    return pixmap;
 }
