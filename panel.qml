@@ -5,14 +5,15 @@ import ru.rosalab.rocketbar 2.0
 Rectangle {
     id:panelRoot
     width: 1600
-    height: 40
+    height: 50
 
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton | Qt.LeftButton
         onClicked: {
-            if (mouse.button === Qt.RightButton)
-                rootPanel.contextMenuHandler(mouse.x, mouse.y)
+            if (mouse.button === Qt.RightButton) {
+                mainWidget.contextMenuHandler(mouse.x, mouse.y)
+            }
         }
     }
 
@@ -68,7 +69,6 @@ Rectangle {
         id: panelMainArea
         width: panelRoot.width
         height: panelRoot.height * 0.8
-        //anchors.verticalCenter: parent.verticalCenter
 
         /*********************************************************************
          * Launcher
@@ -200,7 +200,7 @@ Rectangle {
                     }
                     onClicked: {
                         var p = iconFrame.mapFromItem(panelRoot,0,0)
-                        var rect = rootPanel.getScreenRect();
+                        var rect = mainWidget.getScreenRect();
                         if(mouse.button === Qt.LeftButton)
                             handleClick(-p.x, rect.height-p.y)
                         else {
@@ -279,7 +279,7 @@ Rectangle {
                         }
 
                         onClicked: {
-                            var rect = rootPanel.getScreenRect();
+                            var rect = mainWidget.getScreenRect();
                             if (mouse.button === Qt.LeftButton){
                                 handleClick(-appletButtonRect.mapFromItem(panelRoot,0,0).x, rect.height+mouse.y)
                             }

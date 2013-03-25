@@ -95,7 +95,7 @@ void RocketBar::MainWidget::updateWindow() {
     move(x, y);
 
     //XXX: wtf is this?
-    rootContext()->setContextProperty("rootPanel", this);
+    rootContext()->setContextProperty("mainWidget", this);
     rootContext()->setContextProperty("width", this->width());
     rootContext()->setContextProperty("height", this->height());
 
@@ -157,8 +157,7 @@ void RocketBar::MainWidget::buildMenu(void) {
 
     RocketBar::ThemeManager &themeManager = mContext->themeManager();
     themeManager.update();
-    themeManager.themes().push_back("Default");
-    foreach (QString theme, themeManager.themes()) {
+    foreach (QString theme, themeManager.themes() << "Default") {
         QAction *aTheme = new QAction(theme, themeMenu);
         themeMenu->addAction(aTheme);
     }
