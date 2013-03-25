@@ -12,7 +12,7 @@ RocketBar::StackFolderApplet::StackFolderApplet(QString path)
 
     mFolderStack = new QStack<QFileInfo>();
     mListItem = new QListWidget(mWidget);
-    mListItem->connect(mListItem, SIGNAL(itemPressed(QListWidgetItem*)), this, SLOT(mOpenFile(QListWidgetItem*)));
+    mListItem->connect(mListItem, SIGNAL(itemPressed(QListWidgetItem*)), this, SLOT(openFile(QListWidgetItem*)));
     mLayout = new QGridLayout();
     mBackButton = new QPushButton(tr("Go back"));
     mBackButton->connect(mBackButton, SIGNAL(clicked()), this, SLOT(goBack()));
@@ -24,8 +24,8 @@ RocketBar::StackFolderApplet::StackFolderApplet(QString path)
     mWidget->setLayout(mLayout);
     mWidget->setFixedSize(Width, Height);
     mWidget->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(mWidget, SIGNAL(customContextMenuRequested(const QPoint&)),
-        this, SLOT(handleContextMenu(QPoint)));
+    //connect(mWidget, SIGNAL(customContextMenuRequested(const QPoint&)),
+    //    this, SLOT(handleContextMenu(QPoint)));
 }
 
 RocketBar::StackFolderApplet::~StackFolderApplet() {
