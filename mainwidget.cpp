@@ -142,7 +142,7 @@ void RocketBar::MainWidget::buildMenu(void) {
 void RocketBar::MainWidget::buildLauncher()
 {
     QList<QObject*> launcherList = RocketBar::LauncherHandler::availableApps();
-    launcherList.insert(0, new RocketBar::LauncherHandler("x-terminal-emulator", "terminal"));
+    launcherList.insert(0, new RocketBar::LauncherHandler("x-terminal-emulator", "t"));
 
     rootContext()->setContextProperty("launcherListModel",
                                       QVariant::fromValue(launcherList));

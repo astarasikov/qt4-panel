@@ -24,7 +24,6 @@ static void addAppsFromDir(QDir &dir, QList<QObject*> &lst) {
     QFileInfoList files = dir.entryInfoList(QStringList() << "*.desktop",
                                             QDir::Files | QDir::NoDotAndDotDot);
     foreach (QFileInfo f, files) {
-        qDebug() << f.absoluteFilePath();
         QString appDesc;
         QString appPath;
         QString appIcon;
@@ -43,6 +42,10 @@ static void addAppsFromDir(QDir &dir, QList<QObject*> &lst) {
         appPath = s.value("Exec").toString();
         if (!appPath.length()) {
             appPath = s.value("TryExec").toString();
+        }
+        int idx_opts = appPath.indexOf("%");
+        if (idx_opts) {
+            appPath = appPath.left(idx_opts);
         }
 
         appIcon = s.value("Icon").toString();
