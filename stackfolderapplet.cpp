@@ -1,7 +1,8 @@
-#include "stackfolderapplet.h"
-#include "trashbinapplet.h"
 #include <QDesktopWidget>
 
+#include "stackfolderapplet.h"
+#include "trashbinapplet.h"
+#include "global_defines.h"
 
 RocketBar::StackFolderApplet::StackFolderApplet(QString path)
     :mDirPath(path)
@@ -24,8 +25,6 @@ RocketBar::StackFolderApplet::StackFolderApplet(QString path)
     mWidget->setLayout(mLayout);
     mWidget->setFixedSize(Width, Height);
     mWidget->setContextMenuPolicy(Qt::CustomContextMenu);
-    //connect(mWidget, SIGNAL(customContextMenuRequested(const QPoint&)),
-    //    this, SLOT(handleContextMenu(QPoint)));
 }
 
 RocketBar::StackFolderApplet::~StackFolderApplet() {
@@ -39,7 +38,8 @@ RocketBar::StackFolderApplet::~StackFolderApplet() {
 
 QImage RocketBar::StackFolderApplet::image()
 {
-    return QImage(":/folder.png");
+    int sz = RocketBar::DefaultIconSize;
+    return QIcon::fromTheme("folder").pixmap(sz, sz).toImage();
 }
 
 QString RocketBar::StackFolderApplet::name()
@@ -68,7 +68,7 @@ void RocketBar::StackFolderApplet::openFile(QListWidgetItem* item){
     else
     {
         QStringList parameters;
-        parameters<<"file:"+path;
+        parameters << "file:" +path;
         QProcess::startDetached("xdg-open", parameters);
     }
 }

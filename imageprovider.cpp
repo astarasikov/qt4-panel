@@ -1,8 +1,9 @@
-#include "imageprovider.h"
-
 #include <QDebug>
 #include <QIcon>
 #include <QFile>
+
+#include "imageprovider.h"
+#include "global_defines.h"
 
 RocketBar::ImageProvider::ImageProvider(
         QDeclarativeImageProvider::ImageType type)
@@ -13,6 +14,7 @@ RocketBar::ImageProvider::ImageProvider(
 QPixmap RocketBar::ImageProvider::requestPixmap(const QString &id,
     QSize *size, const QSize &requestedSize)
 {
+    int sz = RocketBar::DefaultIconSize;
     QIcon icon;
     if (QFile(id).exists()) {
         icon = QIcon(id);
@@ -20,7 +22,7 @@ QPixmap RocketBar::ImageProvider::requestPixmap(const QString &id,
     else {
         icon = QIcon::fromTheme(id);
     }
-    QPixmap pixmap = icon.pixmap(32, 32);
+    QPixmap pixmap = icon.pixmap(sz, sz);
     foreach (QSize s, icon.availableSizes()) {
         if (s.width() == requestedSize.width() || s.height() == requestedSize.height()) {
             pixmap = icon.pixmap(s);

@@ -41,9 +41,9 @@ RocketBar::Window::Window() : mMenu(new QMenu())
 } while (0)
 
     MENU_ACTION("&Close", close);
-    MENU_ACTION("&Destroy", destroy);
-    MENU_ACTION("&Kill", kill);
-    MENU_ACTION("&Map", map);
+    //MENU_ACTION("&Destroy", destroy);
+    //MENU_ACTION("&Kill", kill);
+    //MENU_ACTION("&Map", map);
     MENU_ACTION("&Activate", activate);
     MENU_ACTION("&Minimize", minimize);
 }

@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>panel.qml</file>
-        <file alias="folder.png">panel_vertical.qml</file>
-        <file alias="folder.png">img/folder.png</file>
+        <file>panel_vertical.qml</file>
     </qresource>
 </RCC>

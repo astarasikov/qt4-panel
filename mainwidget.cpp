@@ -20,6 +20,7 @@
 RocketBar::MainWidget::MainWidget(
         RocketBar::Context *config, QWidget *parent)
     : QDeclarativeView(parent), mContext(config),
+      mLauncherList(QList<QObject*>()),
       mAppletList(QList<QObject*> ())
 {
     /* initialize a borderless panel window */
@@ -37,6 +38,9 @@ RocketBar::MainWidget::MainWidget(
                                mContext->mAppletImageProvider);
 
     buildMenu();
+    buildLauncher();
+    buildApplets();
+
     updateWindow();
     connect(mContext->mWindowManager,
             SIGNAL(windowsChanged(WindowManager::WindowList&)),
@@ -87,15 +91,17 @@ void RocketBar::MainWidget::updateWindow() {
         setSource(mContext->themeManager().qml(ThemeManager::PANEL_VERTICAL));
     }
 
-    resize(screenRect.width(), height());
+    resize(w, h);
+    move(x, y);
+
     //XXX: wtf is this?
     rootContext()->setContextProperty("rootPanel", this);
     rootContext()->setContextProperty("width", this->width());
     rootContext()->setContextProperty("height", this->height());
-    move(x, y);
 
-    buildLauncher();
-    buildApplets();
+    rootContext()->setContextProperty("launcherListModel",
+        QVariant::fromValue(mLauncherList));
+    updateAppletDisplay();
 }
 
 void RocketBar::MainWidget::themeSelected(QAction *a)
@@ -131,6 +137,7 @@ void RocketBar::MainWidget::updateWindows
 
 void RocketBar::MainWidget::buildMenu(void) {
     mContextMenu = new QMenu(this);
+    mContextMenu->setStyleSheet("background-color: black; color: white;");
 
     QAction *aQuit = new QAction(tr("&Quit"), this);
     connect(aQuit, SIGNAL(triggered()), this, SLOT(close()));
@@ -179,10 +186,8 @@ void RocketBar::MainWidget::buildMenu(void) {
 void RocketBar::MainWidget::buildLauncher()
 {
     QList<QObject*> launcherList = RocketBar::LauncherHandler::availableApps();
-    launcherList.insert(0, new RocketBar::LauncherHandler("x-terminal-emulator", "t"));
-
-    rootContext()->setContextProperty("launcherListModel",
-                                      QVariant::fromValue(launcherList));
+    launcherList.insert(0, new RocketBar::LauncherHandler("rosa-simplelauncher", "rosa-simplelauncher"));
+    mLauncherList.append(launcherList);
 }
 
 void RocketBar::MainWidget::buildApplets()
@@ -221,6 +226,6 @@ void RocketBar::MainWidget::updateAppletDisplay()
                                       QVariant::fromValue(mAppletList));
 }
 
-QRect RocketBar::MainWidget::getScreenRect(){
+QRect RocketBar::MainWidget::getScreenRect() {
     return screenRect;
 }
