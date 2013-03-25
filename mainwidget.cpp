@@ -28,6 +28,7 @@ RocketBar::MainWidget::MainWidget(
     setAttribute(Qt::WA_TranslucentBackground);
     setStyleSheet("border-style: none;background:transparent;");
     setResizeMode(QDeclarativeView::SizeRootObjectToView);
+
     buildMenu();
 
     engine()->addImageProvider(QLatin1String("xdg"), mContext->mImageProvider);
@@ -140,15 +141,8 @@ void RocketBar::MainWidget::buildMenu(void) {
 
 void RocketBar::MainWidget::buildLauncher()
 {
-    QList<QObject*> launcherList;
-
-    //XXX: it sucks
-    launcherList.append(new LauncherHandler("konsole",
-        "/usr/bin/konsole"));
-    launcherList.append(new LauncherHandler("x-terminal-emulator",
-        "/usr/bin/chromium"));
-    launcherList.append(new LauncherHandler("konqueror",
-        "/usr/bin/konqueror"));
+    QList<QObject*> launcherList = RocketBar::LauncherHandler::availableApps();
+    launcherList.insert(0, new RocketBar::LauncherHandler("x-terminal-emulator", "terminal"));
 
     rootContext()->setContextProperty("launcherListModel",
                                       QVariant::fromValue(launcherList));

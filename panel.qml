@@ -102,7 +102,7 @@ Rectangle {
                         width: parent.width - 4
                         height: parent.height - 4
                         anchors.centerIn: parent
-                        source: "image://xdg/" + title
+                        source: "image://xdg/" + icon
                     }
                 }
 
