@@ -302,7 +302,7 @@ Rectangle {
 
                 Text {
                     id:rb_clock
-                    text:"00:00"
+                    text: Qt.formatDateTime(new Date(), "hh:mm")
                     font.pointSize: 24
                     color: "white"
                     smooth: true
