@@ -101,7 +101,6 @@ void RocketBar::StackFolderApplet::initFileList(){
         QListWidgetItem *item = new QListWidgetItem(icon, name);
         mListItem->addItem(item);
     }
-
 }
 
 void RocketBar::StackFolderApplet::goBack(){
@@ -110,7 +109,3 @@ void RocketBar::StackFolderApplet::goBack(){
         initApplet(file.absolutePath());
     }
 }
-
-void RocketBar::StackFolderApplet::handleContextMenu(int x, int y) {
-}
-

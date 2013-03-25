@@ -55,6 +55,8 @@ RocketBar::Window::~Window()
 
 void RocketBar::Window::handleClick(int x, int y)
 {
+    Q_UNUSED(x);
+    Q_UNUSED(y);
     activate();
 }
 

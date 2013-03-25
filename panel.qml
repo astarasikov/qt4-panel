@@ -203,8 +203,9 @@ Rectangle {
                         var rect = rootPanel.getScreenRect();
                         if(mouse.button === Qt.LeftButton)
                             handleClick(-p.x, rect.height-p.y)
-                        else
-                            handleContextMenu(-p.x + mouse.x, rect.height-p.y+mouse.y)
+                        else {
+                            handleContextMenu(-p.x + mouse.x, p.y + mouse.y + 100)
+                        }
                     }
                 }
             }

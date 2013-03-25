@@ -11,6 +11,7 @@ QImage RocketBar::MapImageProvider::requestImage(const QString &id,
                                                  QSize *size,
                                                  const QSize &requestedSize)
 {
+    Q_UNUSED(requestedSize);
     QString name = id;
     int timeIdx = name.indexOf("|");
     if (timeIdx >= 0) {

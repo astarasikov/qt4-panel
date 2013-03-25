@@ -26,10 +26,9 @@ RocketBar::MainWidget::MainWidget(
     setFocus(Qt::ActiveWindowFocusReason);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_X11NetWmWindowTypeDock);
     setStyleSheet("border-style: none;background:transparent;");
     setResizeMode(QDeclarativeView::SizeRootObjectToView);
-
-    buildMenu();
 
     engine()->addImageProvider(QLatin1String("xdg"), mContext->mImageProvider);
     engine()->addImageProvider(QLatin1String("task"),
@@ -37,6 +36,7 @@ RocketBar::MainWidget::MainWidget(
     engine()->addImageProvider(QLatin1String("applet"),
                                mContext->mAppletImageProvider);
 
+    buildMenu();
     updateWindow();
     connect(mContext->mWindowManager,
             SIGNAL(windowsChanged(WindowManager::WindowList&)),
@@ -44,7 +44,11 @@ RocketBar::MainWidget::MainWidget(
 }
 
 RocketBar::MainWidget::~MainWidget() {
-
+    foreach(QObject *o, mAppletList) {
+        delete o;
+    }
+    mAppletList.clear();
+    delete mContextMenu;
 }
 
 void RocketBar::MainWidget::updateWindow() {
@@ -94,6 +98,23 @@ void RocketBar::MainWidget::updateWindow() {
     buildApplets();
 }
 
+void RocketBar::MainWidget::themeSelected(QAction *a)
+{
+    mContext->themeManager().setTheme(a->text());
+    updateWindow();
+}
+
+void RocketBar::MainWidget::setOrientation(QAction *a)
+{
+    bool ok;
+    int side = a->data().toInt(&ok);
+    if (!ok) {
+        return;
+    }
+    mContext->setScreenEdge((RocketBar::ScreenEdge)side);
+    updateWindow();
+}
+
 void RocketBar::MainWidget::updateWindows
 (RocketBar::WindowManager::WindowList &list)
 {
@@ -108,19 +129,6 @@ void RocketBar::MainWidget::updateWindows
         QVariant::fromValue(list));
 }
 
-void RocketBar::MainWidget::changeTheme()
-{
-    static int idx=0;
-    RocketBar::ThemeManager& themeManager = mContext->themeManager();
-    themeManager.update();
-    QList<QString> themes = themeManager.themes();
-    if (themes.length()) {
-        idx = (idx + 1) % themes.length();
-        themeManager.setTheme(themes.at(idx));
-    }
-    updateWindow();
-}
-
 void RocketBar::MainWidget::buildMenu(void) {
     mContextMenu = new QMenu(this);
 
@@ -130,13 +138,42 @@ void RocketBar::MainWidget::buildMenu(void) {
     QAction *aRefresh = new QAction(tr("&Refresh"), this);
     connect(aRefresh, SIGNAL(triggered()), this, SLOT(updateWindow()));
 
-    QAction *aTheme = new QAction(tr("&Change Theme"), this);
-    connect(aTheme, SIGNAL(triggered()), this, SLOT(changeTheme()));
-
     mContextMenu->addSeparator();
     mContextMenu->addAction(aQuit);
     mContextMenu->addAction(aRefresh);
-    mContextMenu->addAction(aTheme);
+
+    /* Theme Selector */
+    mContextMenu->addSeparator();
+    QMenu *themeMenu = new QMenu(tr("Select Theme"), mContextMenu);
+    connect(themeMenu, SIGNAL(triggered(QAction*)), this, SLOT(themeSelected(QAction*)));
+    mContextMenu->addMenu(themeMenu);
+
+    RocketBar::ThemeManager &themeManager = mContext->themeManager();
+    themeManager.update();
+    themeManager.themes().push_back("Default");
+    foreach (QString theme, themeManager.themes()) {
+        QAction *aTheme = new QAction(theme, themeMenu);
+        themeMenu->addAction(aTheme);
+    }
+
+    /* Orientation Selector */
+    mContextMenu->addSeparator();
+    QMenu *orientationMenu = new QMenu(tr("Panel Orientation"), mContextMenu);
+    connect(orientationMenu, SIGNAL(triggered(QAction*)), this, SLOT(setOrientation(QAction*)));
+    mContextMenu->addMenu(orientationMenu);
+#define MK_ORIENTATION(o) do { \
+    QAction *a = new QAction(tr(#o), orientationMenu); \
+    int v = int(RocketBar::Screen_ ## o); \
+    a->setData(QVariant::fromValue(v)); \
+    orientationMenu->addAction(a); \
+} while (0)
+
+    MK_ORIENTATION(Bottom);
+    MK_ORIENTATION(Top);
+    MK_ORIENTATION(Left);
+    MK_ORIENTATION(Right);
+
+#undef MK_ORIENTATION
 }
 
 void RocketBar::MainWidget::buildLauncher()

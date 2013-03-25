@@ -45,7 +45,6 @@ public slots:
     virtual void openFolder();
     virtual void goBack();
     virtual void handleClick(int x, int y);
-    virtual void handleContextMenu(int x, int y);
 };
 
 } //namespace RocketBar

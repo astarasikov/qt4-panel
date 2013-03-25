@@ -22,7 +22,7 @@ QPixmap RocketBar::ImageProvider::requestPixmap(const QString &id,
     }
     QPixmap pixmap = icon.pixmap(32, 32);
     foreach (QSize s, icon.availableSizes()) {
-        if (s.width() == size->width() || s.height() == size->height()) {
+        if (s.width() == requestedSize.width() || s.height() == requestedSize.height()) {
             pixmap = icon.pixmap(s);
         }
     }

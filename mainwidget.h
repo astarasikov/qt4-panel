@@ -28,8 +28,9 @@ protected:
     void buildApplets();
 
 protected slots:
-    void changeTheme();
     void updateWindow();
+    void themeSelected(QAction *a);
+    void setOrientation(QAction *a);
 
 public slots:
     void updateWindows(WindowManager::WindowList &list);

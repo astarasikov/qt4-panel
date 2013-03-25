@@ -35,6 +35,8 @@ QString RocketBar::TestApplet::name()
 
 void RocketBar::TestApplet::handleClick(int x, int y)
 {
+    Q_UNUSED(x);
+    Q_UNUSED(y);
     mWidget->setVisible(!mWidget->isVisible());
 }
 
