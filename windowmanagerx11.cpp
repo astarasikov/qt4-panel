@@ -326,8 +326,9 @@ QImage RocketBar::X11Window::icon()
     ::Atom *_data = data;
     long long _nItems = nItems;
     while (_data && _nItems > 0) {
-        unsigned width = static_cast<unsigned>(data[0]);
-        unsigned height = static_cast<unsigned>(data[1]);
+        unsigned width = static_cast<unsigned>(_data[0]);
+        unsigned height = static_cast<unsigned>(_data[1]);
+        _data += 2;
         if (!width || !height) {
             break;
         }
