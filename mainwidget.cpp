@@ -82,6 +82,7 @@ void RocketBar::MainWidget::updateWindow() {
         setSource(mContext->themeManager().qml(ThemeManager::PANEL_VERTICAL));
     }
 
+    resize(screenRect.width(), height());
     //XXX: wtf is this?
     rootContext()->setContextProperty("rootPanel", this);
     rootContext()->setContextProperty("width", this->width());
